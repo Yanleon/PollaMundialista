@@ -43,10 +43,18 @@
 
                                 @if ($match)
                                     <div class="rounded-xl border border-slate-700 bg-slate-950/70 p-3">
-                                        <p class="truncate text-sm font-semibold text-slate-100">{{ $match->homeTeam?->name }} vs {{ $match->awayTeam?->name }}</p>
+                                        <div class="space-y-1 text-sm font-semibold text-slate-100">
+                                            <p class="flex items-center gap-2 truncate"><x-team-flag :team="$match->homeTeam" /> <span class="truncate">{{ $match->homeTeam?->name }}</span></p>
+                                            <p class="flex items-center gap-2 truncate"><x-team-flag :team="$match->awayTeam" /> <span class="truncate">{{ $match->awayTeam?->name }}</span></p>
+                                        </div>
                                         <p class="mt-1 text-xs text-slate-400">{{ $match->match_date?->format('d/m/Y H:i') }} · {{ $match->status }}</p>
                                         <div class="mt-2 flex flex-wrap gap-2">
                                             <a href="{{ route('admin.match-games.edit', $match) }}" class="inline-flex rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-100 hover:border-rose-500/60 hover:text-rose-200">Asignar equipos</a>
+                                            <form method="POST" action="{{ route('admin.match-games.destroy', $match) }}" onsubmit="return confirm('Deseas eliminar este cruce?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="rounded-md bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-500">Eliminar</button>
+                                            </form>
                                         </div>
                                     </div>
                                 @else

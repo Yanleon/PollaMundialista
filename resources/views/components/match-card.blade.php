@@ -54,9 +54,9 @@
     </div>
 
     <div class="mb-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-2xl border border-slate-700/70 bg-slate-900/75 p-3 text-sm">
-        <div class="truncate font-semibold text-slate-100">{{ $homeTeamName }}</div>
+        <div class="flex items-center gap-2 truncate font-semibold text-slate-100"><x-team-flag :team="data_get($matchGame, 'homeTeam')" /> <span class="truncate">{{ $homeTeamName }}</span></div>
         <div class="text-lg font-black text-rose-300">vs</div>
-        <div class="truncate text-right font-semibold text-slate-100">{{ $awayTeamName }}</div>
+        <div class="flex items-center justify-end gap-2 truncate text-right font-semibold text-slate-100"><span class="truncate">{{ $awayTeamName }}</span> <x-team-flag :team="data_get($matchGame, 'awayTeam')" /></div>
     </div>
 
     @if ($editable)
@@ -80,12 +80,12 @@
                 <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">Tu pronostico registrado</p>
                 <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-xl border border-slate-700/70 bg-slate-950/70 px-3 py-2">
                     <div>
-                        <p class="truncate text-xs text-slate-400">{{ $homeTeamName }}</p>
+                        <p class="flex items-center gap-2 truncate text-xs text-slate-400"><x-team-flag :team="data_get($matchGame, 'homeTeam')" /> <span class="truncate">{{ $homeTeamName }}</span></p>
                         <p class="text-2xl font-black text-slate-100">{{ $homePrediction }}</p>
                     </div>
                     <div class="text-sm font-bold text-rose-300">vs</div>
                     <div class="text-right">
-                        <p class="truncate text-xs text-slate-400">{{ $awayTeamName }}</p>
+                        <p class="flex items-center justify-end gap-2 truncate text-xs text-slate-400"><span class="truncate">{{ $awayTeamName }}</span> <x-team-flag :team="data_get($matchGame, 'awayTeam')" /></p>
                         <p class="text-2xl font-black text-slate-100">{{ $awayPrediction }}</p>
                     </div>
                 </div>

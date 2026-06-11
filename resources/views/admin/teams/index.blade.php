@@ -14,10 +14,12 @@
             <div class="rounded-xl border border-green-500/40 bg-green-600/10 px-4 py-3 text-sm text-green-200">{{ session('success') }}</div>
         @endif
 
-        <x-table :headers="['Nombre', 'Codigo', 'Grupo', 'Estado', 'Acciones']">
+        <x-table :headers="['Equipo', 'Codigo', 'Grupo', 'Estado', 'Acciones']">
             @forelse ($teams as $team)
                 <tr class="hover:bg-slate-800/60 transition">
-                    <td class="px-4 py-3 text-sm font-semibold text-slate-100">{{ $team->name }}</td>
+                    <td class="px-4 py-3 text-sm font-semibold text-slate-100">
+                        <span class="flex items-center gap-2"><x-team-flag :team="$team" size="md" /> {{ $team->name }}</span>
+                    </td>
                     <td class="px-4 py-3 text-sm text-slate-300">{{ $team->code }}</td>
                     <td class="px-4 py-3 text-sm text-slate-300">{{ $team->group_name ?? '-' }}</td>
                     <td class="px-4 py-3">

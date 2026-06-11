@@ -64,7 +64,7 @@
 
                                     <article class="knockout-match">
                                         <div class="flex items-center justify-between gap-2">
-                                            <p class="truncate text-sm font-semibold text-slate-100">{{ $matchGame->homeTeam?->name ?? 'Por definir' }}</p>
+                                            <p class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold text-slate-100"><x-team-flag :team="$matchGame->homeTeam" /> <span class="truncate">{{ $matchGame->homeTeam?->name ?? 'Por definir' }}</span></p>
                                             <x-badge :variant="$statusVariant" class="shrink-0">{{ $matchGame->status }}</x-badge>
                                         </div>
 
@@ -72,7 +72,7 @@
                                             <span class="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-600 bg-slate-900 text-[11px] font-bold text-rose-200">VS</span>
                                         </div>
 
-                                        <p class="truncate text-sm font-semibold text-slate-100">{{ $matchGame->awayTeam?->name ?? 'Por definir' }}</p>
+                                        <p class="flex items-center gap-2 truncate text-sm font-semibold text-slate-100"><x-team-flag :team="$matchGame->awayTeam" /> <span class="truncate">{{ $matchGame->awayTeam?->name ?? 'Por definir' }}</span></p>
 
                                         <div class="mt-2 flex items-center justify-between text-xs text-slate-400">
                                             <span>{{ $matchGame->match_date?->format('d/m H:i') }}</span>
