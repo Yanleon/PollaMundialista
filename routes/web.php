@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::resource('teams', TeamController::class)->except(['show']);
+        Route::get('/match-games/bracket', [MatchGameController::class, 'bracket'])->name('match-games.bracket');
         Route::resource('match-games', MatchGameController::class)->parameters(['match-games' => 'matchGame'])->except(['show']);
         Route::patch('/match-games/{matchGame}/result', [MatchGameController::class, 'updateResult'])->name('match-games.update-result');
         Route::post('/match-games/notify-today', [MatchGameController::class, 'notifyToday'])->name('match-games.notify-today');

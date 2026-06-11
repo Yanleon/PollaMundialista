@@ -38,6 +38,11 @@ class MatchGameController extends Controller
             ->orderBy('match_date')
             ->get();
 
+        return view('admin.match-games.index', compact('matches', 'todayMatches'));
+    }
+
+    public function bracket(): View
+    {
         $bracketMatches = MatchGame::query()
             ->with(['homeTeam', 'awayTeam'])
             ->orderBy('match_date')
@@ -46,7 +51,7 @@ class MatchGameController extends Controller
 
         $bracketRounds = $this->buildBracketRounds($bracketMatches);
 
-        return view('admin.match-games.index', compact('matches', 'todayMatches', 'bracketRounds'));
+        return view('admin.match-games.bracket', compact('bracketRounds'));
     }
 
     public function create(): View
