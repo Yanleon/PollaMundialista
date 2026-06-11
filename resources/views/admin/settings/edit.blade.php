@@ -42,18 +42,35 @@
                     @error('hero_subtitle') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                 </div>
 
-                <div>
-                    <label class="mb-1 block text-sm font-semibold text-slate-200">Dominios autorizados para registrarse</label>
-                    <textarea name="allowed_registration_domains" rows="3" placeholder="wexler.com.co" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">{{ old('allowed_registration_domains', $settings->get('allowed_registration_domains')) }}</textarea>
-                    <p class="mt-1 text-xs text-slate-400">Escribe dominios sin espacios, por ejemplo <span class="font-semibold text-slate-300">empresa.com.co</span>. Tambien puedes escribir <span class="font-semibold text-slate-300">@empresa.com.co</span>.</p>
-                    @error('allowed_registration_domains') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
-                </div>
+                <div class="rounded-2xl border border-slate-700 bg-slate-900/60 p-4">
+                    <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                            <h2 class="text-lg font-semibold text-slate-100">Restriccion de registro</h2>
+                            <p class="text-sm text-slate-400">Cuando esta activa, solo se aceptan los dominios o correos definidos abajo. Si esta apagada, cualquier correo valido puede registrarse.</p>
+                        </div>
+                        <label class="inline-flex items-center gap-2 rounded-full border border-slate-600 bg-slate-950 px-3 py-2 text-sm font-semibold text-slate-200">
+                            <input type="hidden" name="registration_email_restriction_enabled" value="0">
+                            <input type="checkbox" name="registration_email_restriction_enabled" value="1" @checked(old('registration_email_restriction_enabled', $settings->get('registration_email_restriction_enabled')) == '1') class="rounded border-slate-500 bg-slate-800 text-sky-500 focus:ring-sky-500">
+                            Activar restriccion
+                        </label>
+                    </div>
+                    @error('registration_email_restriction_enabled') <p class="mb-3 text-xs text-red-300">{{ $message }}</p> @enderror
 
-                <div>
-                    <label class="mb-1 block text-sm font-semibold text-slate-200">Correos autorizados para registrarse</label>
-                    <textarea name="allowed_registration_emails" rows="7" placeholder="usuario1@empresa.com&#10;usuario2@empresa.com" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">{{ old('allowed_registration_emails', $settings->get('allowed_registration_emails')) }}</textarea>
-                    <p class="mt-1 text-xs text-slate-400">Opcional: escribe correos puntuales adicionales. Si dominios y correos quedan vacios, el registro queda abierto.</p>
-                    @error('allowed_registration_emails') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                    <div class="space-y-4">
+                        <div>
+                            <label class="mb-1 block text-sm font-semibold text-slate-200">Dominios autorizados para registrarse</label>
+                            <textarea name="allowed_registration_domains" rows="3" placeholder="wexler.com.co" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">{{ old('allowed_registration_domains', $settings->get('allowed_registration_domains')) }}</textarea>
+                            <p class="mt-1 text-xs text-slate-400">Escribe dominios sin espacios, por ejemplo <span class="font-semibold text-slate-300">empresa.com.co</span>. Tambien puedes escribir <span class="font-semibold text-slate-300">@empresa.com.co</span>.</p>
+                            @error('allowed_registration_domains') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-semibold text-slate-200">Correos autorizados para registrarse</label>
+                            <textarea name="allowed_registration_emails" rows="7" placeholder="usuario1@empresa.com&#10;usuario2@empresa.com" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">{{ old('allowed_registration_emails', $settings->get('allowed_registration_emails')) }}</textarea>
+                            <p class="mt-1 text-xs text-slate-400">Opcional: escribe correos puntuales adicionales. Estas listas solo se aplican cuando la restriccion esta activa.</p>
+                            @error('allowed_registration_emails') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
                 </div>
 
                 <div class="rounded-2xl border border-sky-400/30 bg-sky-500/10 p-4">

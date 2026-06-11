@@ -51,8 +51,17 @@ class AppSetting extends Model
             ->values();
     }
 
+    public static function registrationEmailRestrictionEnabled(): bool
+    {
+        return static::getValue('registration_email_restriction_enabled', '0') === '1';
+    }
+
     public static function registrationEmailIsAllowed(string $email): bool
     {
+        if (! static::registrationEmailRestrictionEnabled()) {
+            return true;
+        }
+
         $allowedEmails = static::allowedRegistrationEmails();
         $allowedDomains = static::allowedRegistrationDomains();
         $normalizedEmail = str($email)->lower()->trim()->toString();
