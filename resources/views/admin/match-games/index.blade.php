@@ -44,6 +44,41 @@
             @endif
         </x-card>
 
+        <x-card title="Llave eliminatoria" subtitle="Crea los cruces de octavos, cuartos, semifinal y final cuando ya conozcas los clasificados.">
+            <div class="grid gap-4 lg:grid-cols-4">
+                @foreach ($bracketRounds as $round)
+                    <div class="rounded-2xl border border-slate-700 bg-slate-900/70 p-4">
+                        <div class="mb-3 flex items-center justify-between gap-2">
+                            <div>
+                                <h2 class="text-base font-semibold text-slate-100">{{ $round['label'] }}</h2>
+                                <p class="text-xs text-slate-400">{{ $round['matches']->count() }} de {{ $round['slots'] }} cruces</p>
+                            </div>
+                            <x-badge variant="muted">{{ $round['slots'] }}</x-badge>
+                        </div>
+
+                        <div class="space-y-2">
+                            @foreach (range(1, $round['slots']) as $slot)
+                                @php($match = $round['matches']->get($slot - 1))
+
+                                @if ($match)
+                                    <div class="rounded-xl border border-slate-700 bg-slate-950/70 p-3">
+                                        <p class="truncate text-sm font-semibold text-slate-100">{{ $match->homeTeam?->name }} vs {{ $match->awayTeam?->name }}</p>
+                                        <p class="mt-1 text-xs text-slate-400">{{ $match->match_date?->format('d/m/Y H:i') }} · {{ $match->status }}</p>
+                                        <a href="{{ route('admin.match-games.edit', $match) }}" class="mt-2 inline-flex rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-100 hover:border-rose-500/60 hover:text-rose-200">Asignar equipos</a>
+                                    </div>
+                                @else
+                                    <div class="rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-3">
+                                        <p class="text-sm text-slate-400">Cruce {{ $slot }} pendiente</p>
+                                        <a href="{{ route('admin.match-games.create', ['phase' => $round['phase']]) }}" class="mt-2 inline-flex rounded-md bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-500">Crear cruce</a>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </x-card>
+
         <x-table :headers="['Partido', 'Fase', 'Fecha', 'Limite', 'Estado', 'Resultado', 'Acciones']">
             @forelse ($matches as $matchGame)
                 @php

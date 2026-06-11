@@ -14,12 +14,12 @@
                 <div class="grid gap-4 md:grid-cols-2">
                     <div>
                         <label class="mb-1 block text-sm font-semibold text-slate-200">Fase</label>
-                        <input name="phase" value="{{ old('phase') }}" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100" required>
+                        <input name="phase" value="{{ old('phase', request('phase')) }}" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100" required>
                         @error('phase') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="mb-1 block text-sm font-semibold text-slate-200">Grupo</label>
-                        <input name="group_name" value="{{ old('group_name') }}" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
+                        <input name="group_name" value="{{ old('group_name', request('group_name')) }}" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
                         @error('group_name') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
                     <div>

@@ -12,6 +12,8 @@ use App\Services\MatchNotificationService;
 use App\Services\ScoringService;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class MatchGameController extends Controller
@@ -36,7 +38,15 @@ class MatchGameController extends Controller
             ->orderBy('match_date')
             ->get();
 
-        return view('admin.match-games.index', compact('matches', 'todayMatches'));
+        $bracketMatches = MatchGame::query()
+            ->with(['homeTeam', 'awayTeam'])
+            ->orderBy('match_date')
+            ->get()
+            ->filter(fn (MatchGame $matchGame) => $this->detectBracketRound($matchGame->phase) !== null);
+
+        $bracketRounds = $this->buildBracketRounds($bracketMatches);
+
+        return view('admin.match-games.index', compact('matches', 'todayMatches', 'bracketRounds'));
     }
 
     public function create(): View
@@ -130,5 +140,77 @@ class MatchGameController extends Controller
         return $matchGame->status === 'finished'
             && $matchGame->home_score !== null
             && $matchGame->away_score !== null;
+    }
+
+    private function buildBracketRounds(Collection $matches): Collection
+    {
+        return collect($this->bracketRoundConfig())
+            ->map(function (array $round) use ($matches): array {
+                $roundMatches = $matches
+                    ->filter(fn (MatchGame $matchGame) => $this->detectBracketRound($matchGame->phase) === $round['key'])
+                    ->values();
+
+                return [
+                    'key' => $round['key'],
+                    'label' => $round['label'],
+                    'phase' => $round['phase'],
+                    'slots' => $round['slots'],
+                    'matches' => $roundMatches,
+                ];
+            })
+            ->values();
+    }
+
+    private function detectBracketRound(?string $phase): ?string
+    {
+        if (! $phase) {
+            return null;
+        }
+
+        $normalized = Str::lower($phase);
+
+        foreach ($this->bracketRoundConfig() as $round) {
+            foreach ($round['keywords'] as $keyword) {
+                if (str_contains($normalized, $keyword)) {
+                    return $round['key'];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function bracketRoundConfig(): array
+    {
+        return [
+            [
+                'key' => 'round_of_16',
+                'label' => 'Octavos',
+                'phase' => 'Octavos',
+                'slots' => 8,
+                'keywords' => ['octavos', 'octavo', 'round of 16', 'round_of_16', 'r16', '1/8'],
+            ],
+            [
+                'key' => 'quarterfinals',
+                'label' => 'Cuartos',
+                'phase' => 'Cuartos',
+                'slots' => 4,
+                'keywords' => ['cuartos', 'cuarto', 'quarterfinal', 'quarter-final', 'quarter final', '1/4'],
+            ],
+            [
+                'key' => 'semifinals',
+                'label' => 'Semifinal',
+                'phase' => 'Semifinal',
+                'slots' => 2,
+                'keywords' => ['semifinal', 'semi-final', 'semi final', 'semi'],
+            ],
+            [
+                'key' => 'final',
+                'label' => 'Final',
+                'phase' => 'Final',
+                'slots' => 1,
+                'keywords' => ['final'],
+            ],
+        ];
     }
 }
