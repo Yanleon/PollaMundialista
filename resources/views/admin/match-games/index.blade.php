@@ -58,7 +58,9 @@
 
                         <div class="space-y-2">
                             @foreach (range(1, $round['slots']) as $slot)
-                                @php($match = $round['matches']->get($slot - 1))
+                                @php
+                                    $match = $round['matches']->get($slot - 1);
+                                @endphp
 
                                 @if ($match)
                                     <div class="rounded-xl border border-slate-700 bg-slate-950/70 p-3">
