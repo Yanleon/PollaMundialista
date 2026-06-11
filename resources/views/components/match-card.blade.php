@@ -75,8 +75,24 @@
             <x-button type="submit" class="w-full">Guardar pronostico</x-button>
         </form>
     @else
-        <div class="rounded-lg border border-slate-700 bg-slate-900/70 px-3 py-2 text-sm text-slate-300">
-            Pronostico cerrado para este partido.
+        <div class="rounded-lg border border-slate-700 bg-slate-900/70 px-3 py-3 text-sm text-slate-300">
+            @if ($prediction)
+                <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">Tu pronostico registrado</p>
+                <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 rounded-xl border border-slate-700/70 bg-slate-950/70 px-3 py-2">
+                    <div>
+                        <p class="truncate text-xs text-slate-400">{{ $homeTeamName }}</p>
+                        <p class="text-2xl font-black text-slate-100">{{ $homePrediction }}</p>
+                    </div>
+                    <div class="text-sm font-bold text-rose-300">vs</div>
+                    <div class="text-right">
+                        <p class="truncate text-xs text-slate-400">{{ $awayTeamName }}</p>
+                        <p class="text-2xl font-black text-slate-100">{{ $awayPrediction }}</p>
+                    </div>
+                </div>
+                <p class="mt-2 text-xs text-slate-500">El tiempo de edicion ya cerro para este partido.</p>
+            @else
+                Pronostico cerrado para este partido. No registraste marcador antes del cierre.
+            @endif
         </div>
     @endif
 </x-card>
