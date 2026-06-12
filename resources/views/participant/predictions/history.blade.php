@@ -3,7 +3,7 @@
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h1 class="section-title">Historial de predicciones</h1>
-                <p class="section-subtitle">Revisa tus marcadores enviados y de donde salen tus puntos.</p>
+                <p class="section-subtitle">Revisa tus partidos finalizados y de donde salen tus puntos.</p>
             </div>
             <a href="{{ route('participant.predictions.index') }}" class="inline-flex items-center justify-center rounded-full border border-slate-700 bg-slate-900/75 px-4 py-2 text-sm font-semibold text-slate-100 transition hover:border-rose-500/50 hover:text-rose-200">Volver a pronosticos</a>
         </div>
@@ -12,7 +12,7 @@
     <div class="space-y-6">
         <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <x-card>
-                <p class="text-xs uppercase tracking-wide text-slate-400">Pronosticos enviados</p>
+                <p class="text-xs uppercase tracking-wide text-slate-400">Finalizados con pronostico</p>
                 <p class="mt-2 text-3xl font-black text-slate-100">{{ $totalPredictions }}</p>
             </x-card>
 
@@ -37,7 +37,7 @@
                 <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h2 class="text-lg font-semibold text-slate-100">Detalle por partido</h2>
-                        <p class="text-sm text-slate-400">Los puntos solo se asignan cuando el partido tiene marcador oficial registrado.</p>
+                        <p class="text-sm text-slate-400">Solo aparecen partidos finalizados con marcador oficial registrado.</p>
                     </div>
                     <x-badge variant="info">5 exacto · 3 resultado · +1 goles</x-badge>
                 </div>
@@ -125,7 +125,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-4 py-8 text-center text-sm text-slate-400">Aun no has registrado pronosticos.</td>
+                                <td colspan="5" class="px-4 py-8 text-center text-sm text-slate-400">Aun no tienes pronosticos en partidos finalizados.</td>
                             </tr>
                         @endforelse
                     </tbody>

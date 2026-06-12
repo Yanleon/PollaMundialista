@@ -75,27 +75,28 @@ class PredictionController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $predictions = Prediction::query()
+        $finishedPredictionsQuery = Prediction::query()
             ->where('user_id', $user->id)
+            ->whereHas('matchGame', function ($query): void {
+                $query->where('status', 'finished')
+                    ->whereNotNull('home_score')
+                    ->whereNotNull('away_score');
+            });
+
+        $predictions = (clone $finishedPredictionsQuery)
             ->with(['matchGame.homeTeam', 'matchGame.awayTeam'])
             ->latest()
             ->paginate(20);
 
-        $totalPredictions = Prediction::query()
-            ->where('user_id', $user->id)
-            ->count();
+        $totalPredictions = (clone $finishedPredictionsQuery)->count();
 
-        $totalPoints = (int) Prediction::query()
-            ->where('user_id', $user->id)
-            ->sum('points');
+        $totalPoints = (int) (clone $finishedPredictionsQuery)->sum('points');
 
-        $exactScores = Prediction::query()
-            ->where('user_id', $user->id)
+        $exactScores = (clone $finishedPredictionsQuery)
             ->where('is_exact_score', true)
             ->count();
 
-        $correctResults = Prediction::query()
-            ->where('user_id', $user->id)
+        $correctResults = (clone $finishedPredictionsQuery)
             ->where('is_correct_result', true)
             ->count();
 
