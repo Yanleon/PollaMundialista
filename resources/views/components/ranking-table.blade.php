@@ -18,7 +18,9 @@
             <tbody class="divide-y divide-slate-700/80">
                 @forelse ($entries as $entry)
                     @php
-                        $position = $loop->iteration;
+                        $position = method_exists($entries, 'firstItem') && $entries->firstItem()
+                            ? $entries->firstItem() + $loop->index
+                            : $loop->iteration;
                         $rowClass = $position === 1
                             ? 'bg-rose-500/18'
                             : ($position === 2

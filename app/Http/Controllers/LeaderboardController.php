@@ -26,7 +26,7 @@ class LeaderboardController extends Controller
             ->selectRaw('COALESCE(SUM(points), 0) as bonus_points')
             ->groupBy('user_id');
 
-        $ranking = User::query()
+        $rankingQuery = User::query()
             ->leftJoinSub($predictionStats, 'prediction_stats', fn ($join) => $join->on('users.id', '=', 'prediction_stats.user_id'))
             ->leftJoinSub($bonusStats, 'bonus_stats', fn ($join) => $join->on('users.id', '=', 'bonus_stats.user_id'))
             ->where('users.role', 'participant')
@@ -38,8 +38,10 @@ class LeaderboardController extends Controller
             ->orderByDesc('total_points')
             ->orderByDesc('exact_scores')
             ->orderByDesc('correct_results')
-            ->orderBy('users.name')
-            ->paginate(25);
+            ->orderBy('users.name');
+
+        $topRanking = (clone $rankingQuery)->limit(3)->get();
+        $ranking = $rankingQuery->paginate(25);
 
         $prizes = [
             1 => [
@@ -69,6 +71,6 @@ class LeaderboardController extends Controller
         $prizesAreRevealed = $prizesRevealAt !== null && now()->startOfDay()->greaterThanOrEqualTo($prizesRevealAt);
         $canViewSecretPrizes = auth()->user()?->isAdmin() || $prizesAreRevealed;
 
-        return view('leaderboard.index', compact('ranking', 'prizes', 'prizesRevealAt', 'prizesAreRevealed', 'canViewSecretPrizes'));
+        return view('leaderboard.index', compact('ranking', 'topRanking', 'prizes', 'prizesRevealAt', 'prizesAreRevealed', 'canViewSecretPrizes'));
     }
 }

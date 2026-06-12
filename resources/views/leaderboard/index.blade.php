@@ -1,13 +1,4 @@
 <x-app-layout>
-    @php
-        $ranking = $ranking ?? collect([
-            (object) ['name' => 'Laura Gomez', 'department' => 'Finanzas', 'total_points' => 42, 'exact_scores' => 6, 'correct_results' => 11],
-            (object) ['name' => 'Carlos Ruiz', 'department' => 'TI', 'total_points' => 40, 'exact_scores' => 5, 'correct_results' => 10],
-            (object) ['name' => 'Daniela Perez', 'department' => 'Operaciones', 'total_points' => 38, 'exact_scores' => 5, 'correct_results' => 9],
-            (object) ['name' => 'Miguel Nunez', 'department' => 'Comercial', 'total_points' => 35, 'exact_scores' => 4, 'correct_results' => 8],
-        ]);
-    @endphp
-
     <x-slot name="header">
         <div class="flex items-center justify-between gap-3">
             <div>
@@ -21,6 +12,69 @@
     @php
         $hasPrizes = collect($prizes ?? [])->contains(fn ($prize) => filled($prize['name'] ?? null) || filled($prize['image_path'] ?? null));
     @endphp
+
+    <section class="leaderboard-hero mb-6">
+        <div class="leaderboard-hero-glow"></div>
+
+        <div class="relative z-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.28em] text-cyan-200">Top 3 actual</p>
+                <h2 class="mt-2 text-3xl font-black tracking-tight text-white md:text-5xl">El podio de la polla</h2>
+                <p class="mt-2 max-w-2xl text-sm text-slate-200 md:text-base">Los tres participantes con mayor puntaje aparecen destacados. El desempate mantiene marcadores exactos y resultados acertados.</p>
+            </div>
+            <div class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-right backdrop-blur">
+                <p class="text-xs uppercase tracking-[0.2em] text-slate-300">Participantes activos</p>
+                <p class="text-3xl font-black text-white">{{ $ranking->total() }}</p>
+            </div>
+        </div>
+
+        @if ($topRanking->isNotEmpty())
+            @php
+                $podiumOrder = [2, 1, 3];
+                $podiumLabels = [1 => 'Primer lugar', 2 => 'Segundo lugar', 3 => 'Tercer lugar'];
+                $podiumClass = [1 => 'podium-first', 2 => 'podium-second', 3 => 'podium-third'];
+            @endphp
+
+            <div class="relative z-10 mt-8 grid gap-4 lg:grid-cols-3 lg:items-end">
+                @foreach ($podiumOrder as $position)
+                    @php($entry = $topRanking->get($position - 1))
+
+                    @if ($entry)
+                        <article class="podium-card {{ $podiumClass[$position] }} {{ $position === 1 ? 'lg:order-2' : ($position === 2 ? 'lg:order-1' : 'lg:order-3') }}">
+                            <div class="podium-medal medal-{{ $position }}" aria-hidden="true">
+                                <span>{{ $position }}</span>
+                            </div>
+
+                            <div class="mt-4 text-center">
+                                <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-300">{{ $podiumLabels[$position] }}</p>
+                                <h3 class="mt-2 text-2xl font-black text-white">{{ $entry->name }}</h3>
+                                <p class="mt-1 text-sm text-slate-300">{{ $entry->department ?: 'Sin area' }}</p>
+                            </div>
+
+                            <div class="mt-5 grid grid-cols-3 gap-2 text-center">
+                                <div class="podium-stat">
+                                    <p>{{ $entry->total_points }}</p>
+                                    <span>Puntos</span>
+                                </div>
+                                <div class="podium-stat">
+                                    <p>{{ $entry->exact_scores }}</p>
+                                    <span>Exactos</span>
+                                </div>
+                                <div class="podium-stat">
+                                    <p>{{ $entry->correct_results }}</p>
+                                    <span>Aciertos</span>
+                                </div>
+                            </div>
+                        </article>
+                    @endif
+                @endforeach
+            </div>
+        @else
+            <div class="relative z-10 mt-6 rounded-2xl border border-white/15 bg-white/10 p-5 text-sm text-slate-200">
+                Aun no hay participantes activos en el ranking.
+            </div>
+        @endif
+    </section>
 
     @if ($hasPrizes)
         <div class="mb-6 rounded-3xl border border-amber-400/30 bg-gradient-to-br from-amber-500/15 via-slate-900 to-rose-500/10 p-5 shadow-[0_0_35px_rgba(251,191,36,0.08)]">
