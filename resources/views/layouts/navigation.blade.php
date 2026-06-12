@@ -31,7 +31,8 @@
 
                 @if ($user?->role === 'participant')
                     <a href="{{ route('participant.dashboard') }}" class="{{ $baseLink }} {{ request()->routeIs('participant.dashboard') ? 'bg-rose-600 text-white shadow-[0_0_18px_rgba(255,31,69,0.4)]' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">Mi panel</a>
-                    <a href="{{ route('participant.predictions.index') }}" class="{{ $baseLink }} {{ request()->routeIs('participant.predictions.*') ? 'bg-rose-600 text-white shadow-[0_0_18px_rgba(255,31,69,0.4)]' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">Mis pronosticos</a>
+                    <a href="{{ route('participant.predictions.index') }}" class="{{ $baseLink }} {{ request()->routeIs('participant.predictions.index') ? 'bg-rose-600 text-white shadow-[0_0_18px_rgba(255,31,69,0.4)]' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">Mis pronosticos</a>
+                    <a href="{{ route('participant.predictions.history') }}" class="{{ $baseLink }} {{ request()->routeIs('participant.predictions.history') ? 'bg-rose-600 text-white shadow-[0_0_18px_rgba(255,31,69,0.4)]' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">Historial</a>
                 @endif
 
                 @if ($user?->role === 'admin')
@@ -77,6 +78,7 @@
             @if (auth()->user()?->role === 'participant')
                 <a href="{{ route('participant.dashboard') }}" class="block rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-slate-800">Mi panel</a>
                 <a href="{{ route('participant.predictions.index') }}" class="block rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-slate-800">Mis pronosticos</a>
+                <a href="{{ route('participant.predictions.history') }}" class="block rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-slate-800">Historial</a>
             @endif
 
             @if (auth()->user()?->role === 'admin')

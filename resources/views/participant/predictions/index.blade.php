@@ -1,8 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <div>
-            <h1 class="section-title">Mis pronosticos</h1>
-            <p class="section-subtitle">Registra o actualiza tus marcadores antes del cierre de cada partido.</p>
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h1 class="section-title">Mis pronosticos</h1>
+                <p class="section-subtitle">Registra o actualiza tus marcadores antes del cierre de cada partido.</p>
+            </div>
+            <a href="{{ route('participant.predictions.history') }}" class="inline-flex items-center justify-center rounded-full border border-cyan-300/50 bg-cyan-300/10 px-4 py-2 text-sm font-semibold text-cyan-100 transition hover:border-cyan-200 hover:bg-cyan-300/15">Ver historial</a>
         </div>
     </x-slot>
 
@@ -116,33 +119,14 @@
             </x-table>
         </section>
 
-        <section>
-            <h2 class="mb-4 text-lg font-semibold text-slate-100">Historial de predicciones</h2>
-            <x-table :headers="['Partido', 'Fecha', 'Mi marcador', 'Puntos', 'Estado']">
-                @forelse ($predictions as $prediction)
-                    <tr class="hover:bg-slate-800/60 transition">
-                        <td class="px-4 py-3 text-sm text-slate-100">{{ $prediction->matchGame?->homeTeam?->name }} vs {{ $prediction->matchGame?->awayTeam?->name }}</td>
-                        <td class="px-4 py-3 text-sm text-slate-300">{{ $prediction->matchGame?->match_date?->format('d/m/Y H:i') }}</td>
-                        <td class="px-4 py-3 text-sm font-semibold text-slate-100">{{ $prediction->getPredictedResult() }}</td>
-                        <td class="px-4 py-3 text-sm font-bold text-rose-300">{{ $prediction->points }}</td>
-                        <td class="px-4 py-3">
-                            @if ($prediction->matchGame?->status === 'finished')
-                                <x-badge variant="success">Finalizado</x-badge>
-                            @else
-                                <x-badge variant="info">En juego</x-badge>
-                            @endif
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="px-4 py-5 text-center text-sm text-slate-400">Aun no has registrado pronosticos.</td>
-                    </tr>
-                @endforelse
-            </x-table>
-
-            <div class="mt-4">
-                {{ $predictions->links() }}
+        <x-card>
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold text-slate-100">Historial de predicciones</h2>
+                    <p class="text-sm text-slate-300">Consulta tus marcadores enviados y el detalle de puntos ganados por partido.</p>
+                </div>
+                <a href="{{ route('participant.predictions.history') }}" class="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-white via-white to-rose-500 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:scale-[1.02]">Abrir historial</a>
             </div>
-        </section>
+        </x-card>
     </div>
 </x-app-layout>

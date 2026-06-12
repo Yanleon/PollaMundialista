@@ -45,12 +45,6 @@ class PredictionController extends Controller
             ->get()
             ->keyBy('match_game_id');
 
-        $predictions = Prediction::query()
-            ->where('user_id', $user->id)
-            ->with(['matchGame.homeTeam', 'matchGame.awayTeam'])
-            ->latest()
-            ->paginate(15);
-
         $openMatchesCount = $candidateMatches->filter(fn (MatchGame $matchGame) => $matchGame->isPredictionOpen())->count();
 
         $allMatches = MatchGame::query()
@@ -68,12 +62,49 @@ class PredictionController extends Controller
             ->values();
 
         return view('participant.predictions.index', [
-            'predictions' => $predictions,
             'openMatches' => $candidateMatches,
             'openMatchesCount' => $openMatchesCount,
             'openPredictions' => $openPredictions,
             'bracketRounds' => $bracketRounds,
             'finishedBracketMatches' => $finishedBracketMatches,
+        ]);
+    }
+
+    public function history(): View
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $predictions = Prediction::query()
+            ->where('user_id', $user->id)
+            ->with(['matchGame.homeTeam', 'matchGame.awayTeam'])
+            ->latest()
+            ->paginate(20);
+
+        $totalPredictions = Prediction::query()
+            ->where('user_id', $user->id)
+            ->count();
+
+        $totalPoints = (int) Prediction::query()
+            ->where('user_id', $user->id)
+            ->sum('points');
+
+        $exactScores = Prediction::query()
+            ->where('user_id', $user->id)
+            ->where('is_exact_score', true)
+            ->count();
+
+        $correctResults = Prediction::query()
+            ->where('user_id', $user->id)
+            ->where('is_correct_result', true)
+            ->count();
+
+        return view('participant.predictions.history', [
+            'predictions' => $predictions,
+            'totalPredictions' => $totalPredictions,
+            'totalPoints' => $totalPoints,
+            'exactScores' => $exactScores,
+            'correctResults' => $correctResults,
         ]);
     }
 
