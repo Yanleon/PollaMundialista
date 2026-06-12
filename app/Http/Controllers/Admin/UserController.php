@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\MatchGame;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,6 +31,58 @@ class UserController extends Controller
             ->withQueryString();
 
         return view('admin.users.index', compact('participants', 'search'));
+    }
+
+    public function predictionReport(Request $request): View
+    {
+        $matches = MatchGame::query()
+            ->with(['homeTeam', 'awayTeam'])
+            ->orderBy('match_date')
+            ->get();
+
+        $selectedMatch = $request->filled('match_id')
+            ? $matches->firstWhere('id', (int) $request->integer('match_id'))
+            : $matches->first(fn (MatchGame $matchGame) => $matchGame->status !== 'finished') ?? $matches->first();
+
+        $status = $request->string('status', 'all')->toString();
+
+        $participants = collect();
+        $withPredictionCount = 0;
+
+        if ($selectedMatch) {
+            $participants = User::query()
+                ->where('role', 'participant')
+                ->with(['predictions' => fn ($query) => $query->where('match_game_id', $selectedMatch->id)])
+                ->orderBy('name')
+                ->get()
+                ->map(function (User $user): User {
+                    $user->setAttribute('selected_prediction', $user->predictions->first());
+
+                    return $user;
+                });
+
+            $withPredictionCount = $participants
+                ->filter(fn (User $user) => $user->getAttribute('selected_prediction') !== null)
+                ->count();
+
+            $participants = $participants
+                ->when($status === 'done', fn ($items) => $items->filter(fn (User $user) => $user->getAttribute('selected_prediction') !== null))
+                ->when($status === 'missing', fn ($items) => $items->filter(fn (User $user) => $user->getAttribute('selected_prediction') === null))
+                ->values();
+        }
+
+        $totalParticipants = User::query()->where('role', 'participant')->count();
+        $missingPredictionCount = max(0, $totalParticipants - $withPredictionCount);
+
+        return view('admin.users.prediction-report', compact(
+            'matches',
+            'selectedMatch',
+            'participants',
+            'status',
+            'totalParticipants',
+            'withPredictionCount',
+            'missingPredictionCount',
+        ));
     }
 
     public function toggleStatus(User $user): RedirectResponse

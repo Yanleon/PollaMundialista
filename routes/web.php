@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('match-games', MatchGameController::class)->parameters(['match-games' => 'matchGame'])->except(['show']);
         Route::patch('/match-games/{matchGame}/result', [MatchGameController::class, 'updateResult'])->name('match-games.update-result');
         Route::post('/match-games/notify-today', [MatchGameController::class, 'notifyToday'])->name('match-games.notify-today');
+        Route::get('/prediction-report', [UserController::class, 'predictionReport'])->name('prediction-report.index');
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');

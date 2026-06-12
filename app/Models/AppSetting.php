@@ -56,6 +56,11 @@ class AppSetting extends Model
         return static::getValue('registration_email_restriction_enabled', '0') === '1';
     }
 
+    public static function registrationEnabled(): bool
+    {
+        return static::getValue('registration_enabled', '1') === '1';
+    }
+
     public static function registrationEmailIsAllowed(string $email): bool
     {
         if (! static::registrationEmailRestrictionEnabled()) {

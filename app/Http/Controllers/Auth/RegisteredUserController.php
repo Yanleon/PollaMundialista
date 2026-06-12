@@ -21,7 +21,9 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        return view('auth.register', [
+            'registrationEnabled' => AppSetting::registrationEnabled(),
+        ]);
     }
 
     /**
@@ -31,6 +33,12 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        if (! AppSetting::registrationEnabled()) {
+            throw ValidationException::withMessages([
+                'email' => 'El registro esta cerrado temporalmente.',
+            ]);
+        }
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => [

@@ -15,6 +15,7 @@
         $heroTitle = \App\Models\AppSetting::getValue('hero_title', 'Compite con tu equipo de trabajo en la Polla Mundialista Empresarial.');
         $heroSubtitle = \App\Models\AppSetting::getValue('hero_subtitle', 'Registra tus marcadores, acumula puntos automaticamente y escala en el ranking general de la compania durante todo el torneo.');
         $logoPath = \App\Models\AppSetting::getValue('company_logo_path');
+        $registrationEnabled = \App\Models\AppSetting::registrationEnabled();
 
         $allMatches = \App\Models\MatchGame::query()
             ->with(['homeTeam', 'awayTeam'])
@@ -121,7 +122,9 @@
                         <a href="{{ route('dashboard') }}" class="rounded-full border border-rose-400/50 bg-rose-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_18px_rgba(255,31,69,0.35)] hover:bg-rose-500">Entrar al panel</a>
                     @else
                         <a href="{{ route('login') }}" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-200 hover:bg-slate-800">Iniciar sesion</a>
-                        <a href="{{ route('register') }}" class="rounded-full border border-rose-400/50 bg-rose-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_18px_rgba(255,31,69,0.35)] hover:bg-rose-500">Registrarse</a>
+                        @if ($registrationEnabled)
+                            <a href="{{ route('register') }}" class="rounded-full border border-rose-400/50 bg-rose-600 px-4 py-2 text-sm font-semibold text-white shadow-[0_0_18px_rgba(255,31,69,0.35)] hover:bg-rose-500">Registrarse</a>
+                        @endif
                     @endauth
                 </div>
             </div>
@@ -135,7 +138,9 @@
                     <p class="mt-5 max-w-2xl text-base text-slate-300 md:text-lg">{{ $heroSubtitle }}</p>
 
                     <div class="mt-8 flex flex-wrap gap-3">
-                        <a href="{{ route('register') }}" class="rounded-full bg-gradient-to-r from-white via-white to-rose-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(255,31,69,0.45)]">Crear cuenta</a>
+                        @if ($registrationEnabled)
+                            <a href="{{ route('register') }}" class="rounded-full bg-gradient-to-r from-white via-white to-rose-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(255,31,69,0.45)]">Crear cuenta</a>
+                        @endif
                         <a href="{{ route('login') }}" class="rounded-full border border-slate-700 bg-slate-900/75 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:border-rose-500/50 hover:text-rose-200">Ya tengo cuenta</a>
                     </div>
                 </div>
@@ -264,7 +269,9 @@
                 @guest
                     <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
                         <a href="{{ route('login') }}" class="rounded-full border border-slate-700 bg-slate-900/80 px-5 py-3 text-sm font-semibold text-slate-100 hover:border-rose-500/60 hover:text-rose-200">Iniciar sesion</a>
-                        <a href="{{ route('register') }}" class="rounded-full bg-gradient-to-r from-white via-white to-rose-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(255,31,69,0.45)]">Crear cuenta</a>
+                        @if ($registrationEnabled)
+                            <a href="{{ route('register') }}" class="rounded-full bg-gradient-to-r from-white via-white to-rose-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(255,31,69,0.45)]">Crear cuenta</a>
+                        @endif
                     </div>
                 @endguest
             </section>

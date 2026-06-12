@@ -35,6 +35,7 @@
                     <a href="{{ route('admin.teams.index') }}" class="{{ $baseLink }} {{ request()->routeIs('admin.teams.*') ? 'bg-rose-600 text-white shadow-[0_0_18px_rgba(255,31,69,0.4)]' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">Equipos</a>
                     <a href="{{ route('admin.match-games.index') }}" class="{{ $baseLink }} {{ request()->routeIs('admin.match-games.index', 'admin.match-games.create', 'admin.match-games.edit') ? 'bg-rose-600 text-white shadow-[0_0_18px_rgba(255,31,69,0.4)]' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">Partidos</a>
                     <a href="{{ route('admin.match-games.bracket') }}" class="{{ $baseLink }} {{ request()->routeIs('admin.match-games.bracket') ? 'bg-rose-600 text-white shadow-[0_0_18px_rgba(255,31,69,0.4)]' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">Llaves</a>
+                    <a href="{{ route('admin.prediction-report.index') }}" class="{{ $baseLink }} {{ request()->routeIs('admin.prediction-report.*') ? 'bg-rose-600 text-white shadow-[0_0_18px_rgba(255,31,69,0.4)]' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">Pronosticos</a>
                     <a href="{{ route('admin.users.index') }}" class="{{ $baseLink }} {{ request()->routeIs('admin.users.*') ? 'bg-rose-600 text-white shadow-[0_0_18px_rgba(255,31,69,0.4)]' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">Participantes</a>
                     <a href="{{ route('admin.settings.edit') }}" class="{{ $baseLink }} {{ request()->routeIs('admin.settings.*') ? 'bg-rose-600 text-white shadow-[0_0_18px_rgba(255,31,69,0.4)]' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">Configuracion</a>
                 @endif
@@ -71,6 +72,7 @@
                 <a href="{{ route('admin.teams.index') }}" class="block rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-slate-800">Equipos</a>
                 <a href="{{ route('admin.match-games.index') }}" class="block rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-slate-800">Partidos</a>
                 <a href="{{ route('admin.match-games.bracket') }}" class="block rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-slate-800">Llaves</a>
+                <a href="{{ route('admin.prediction-report.index') }}" class="block rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-slate-800">Pronosticos</a>
                 <a href="{{ route('admin.users.index') }}" class="block rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-slate-800">Participantes</a>
                 <a href="{{ route('admin.settings.edit') }}" class="block rounded-xl px-3 py-2 text-sm text-slate-200 hover:bg-slate-800">Configuracion</a>
             @endif

@@ -20,6 +20,7 @@ class UpdateSettingsRequest extends FormRequest
             'support_email' => ['nullable', 'email', 'max:120'],
             'whatsapp_group_invite_url' => ['nullable', 'url', 'max:2048'],
             'whatsapp_group_webhook_url' => ['nullable', 'url', 'max:2048'],
+            'registration_enabled' => ['nullable', 'boolean'],
             'registration_email_restriction_enabled' => ['nullable', 'boolean'],
             'allowed_registration_domains' => ['nullable', 'string', 'max:2000'],
             'allowed_registration_emails' => ['nullable', 'string', 'max:10000'],

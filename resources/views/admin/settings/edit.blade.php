@@ -43,6 +43,19 @@
                 </div>
 
                 <div class="rounded-2xl border border-slate-700 bg-slate-900/60 p-4">
+                    <div class="mb-4 flex flex-col gap-3 border-b border-slate-700 pb-4 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                            <h2 class="text-lg font-semibold text-slate-100">Estado del registro</h2>
+                            <p class="text-sm text-slate-400">Apagalo cuando no quieras que entren participantes nuevos. Los usuarios existentes podran seguir iniciando sesion.</p>
+                        </div>
+                        <label class="inline-flex items-center gap-2 rounded-full border border-slate-600 bg-slate-950 px-3 py-2 text-sm font-semibold text-slate-200">
+                            <input type="hidden" name="registration_enabled" value="0">
+                            <input type="checkbox" name="registration_enabled" value="1" @checked(old('registration_enabled', $settings->get('registration_enabled', '1')) == '1') class="rounded border-slate-500 bg-slate-800 text-sky-500 focus:ring-sky-500">
+                            Permitir nuevos registros
+                        </label>
+                    </div>
+                    @error('registration_enabled') <p class="mb-3 text-xs text-red-300">{{ $message }}</p> @enderror
+
                     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                             <h2 class="text-lg font-semibold text-slate-100">Restriccion de registro</h2>

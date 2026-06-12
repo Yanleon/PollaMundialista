@@ -4,6 +4,13 @@
         <p class="mt-1 text-sm text-slate-300">Registrate para participar en el torneo interno de pronosticos.</p>
     </div>
 
+    @if (! ($registrationEnabled ?? true))
+        <div class="rounded-2xl border border-amber-400/40 bg-amber-500/10 px-4 py-5 text-center text-sm text-amber-100">
+            <p class="font-semibold">El registro esta cerrado temporalmente.</p>
+            <p class="mt-1 text-amber-100/80">Si ya tienes cuenta, puedes iniciar sesion normalmente.</p>
+            <a href="{{ route('login') }}" class="mt-4 inline-flex rounded-full bg-amber-300 px-4 py-2 text-sm font-semibold text-slate-950">Ir a iniciar sesion</a>
+        </div>
+    @else
     <form method="POST" action="{{ route('register') }}" class="space-y-4">
         @csrf
 
@@ -43,4 +50,5 @@
             <x-button type="submit" class="w-full sm:w-auto">Registrarme</x-button>
         </div>
     </form>
+    @endif
 </x-guest-layout>

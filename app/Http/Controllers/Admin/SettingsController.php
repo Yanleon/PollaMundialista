@@ -21,6 +21,7 @@ class SettingsController extends Controller
             'whatsapp_group_invite_url',
             'whatsapp_group_webhook_url',
             'company_logo_path',
+            'registration_enabled',
             'registration_email_restriction_enabled',
             'allowed_registration_emails',
             'allowed_registration_domains',
@@ -47,6 +48,7 @@ class SettingsController extends Controller
         AppSetting::setValue('support_email', $data['support_email'] ?? null);
         AppSetting::setValue('whatsapp_group_invite_url', $data['whatsapp_group_invite_url'] ?? null);
         AppSetting::setValue('whatsapp_group_webhook_url', $data['whatsapp_group_webhook_url'] ?? null);
+        AppSetting::setValue('registration_enabled', $request->boolean('registration_enabled') ? '1' : '0');
         AppSetting::setValue('registration_email_restriction_enabled', $request->boolean('registration_email_restriction_enabled') ? '1' : '0');
         AppSetting::setValue('allowed_registration_domains', $data['allowed_registration_domains'] ?? null);
         AppSetting::setValue('allowed_registration_emails', $data['allowed_registration_emails'] ?? null);

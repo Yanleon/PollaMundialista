@@ -33,6 +33,12 @@ class BaseTournamentDataSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'key' => 'registration_enabled',
+                'value' => '1',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
                 'key' => 'allowed_registration_domains',
                 'value' => '@wexler.com.co',
                 'created_at' => now(),

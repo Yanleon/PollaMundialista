@@ -46,6 +46,7 @@
                     <a href="{{ route('admin.teams.index') }}" class="rounded-xl border border-slate-700 bg-slate-900/75 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-rose-500/60 hover:text-rose-200">Administrar equipos</a>
                     <a href="{{ route('admin.match-games.index') }}" class="rounded-xl border border-slate-700 bg-slate-900/75 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-rose-500/60 hover:text-rose-200">Administrar partidos</a>
                     <a href="{{ route('admin.match-games.bracket') }}" class="rounded-xl border border-slate-700 bg-slate-900/75 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-rose-500/60 hover:text-rose-200">Armar llaves</a>
+                    <a href="{{ route('admin.prediction-report.index') }}" class="rounded-xl border border-slate-700 bg-slate-900/75 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-rose-500/60 hover:text-rose-200">Control de pronosticos</a>
                     <a href="{{ route('admin.users.index') }}" class="rounded-xl border border-slate-700 bg-slate-900/75 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-rose-500/60 hover:text-rose-200">Ver participantes</a>
                     <a href="{{ route('admin.settings.edit') }}" class="rounded-xl border border-slate-700 bg-slate-900/75 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-rose-500/60 hover:text-rose-200">Configuracion</a>
                 </div>
