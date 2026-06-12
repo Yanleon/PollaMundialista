@@ -33,6 +33,54 @@
             </form>
         </x-card>
 
+        <x-card>
+            <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold text-slate-100">Recordatorios WhatsApp de hoy</h2>
+                    <p class="text-sm text-slate-400">Mensajes para participantes activos que tienen partidos de hoy sin pronosticar.</p>
+                </div>
+                <span class="rounded-full border border-amber-400/40 bg-amber-500/10 px-3 py-1 text-sm font-semibold text-amber-200">
+                    {{ $whatsappReminders->count() }} pendientes
+                </span>
+            </div>
+
+            @if ($todayMatches->isEmpty())
+                <p class="text-sm text-slate-300">No hay partidos abiertos para pronosticar hoy.</p>
+            @elseif ($whatsappReminders->isEmpty())
+                <p class="text-sm text-green-300">Todos los participantes activos ya pronosticaron los partidos abiertos de hoy.</p>
+            @else
+                <div class="space-y-4">
+                    @foreach ($whatsappReminders as $reminder)
+                        <div class="rounded-2xl border border-slate-700 bg-slate-950/45 p-4">
+                            <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                                <div>
+                                    <p class="font-semibold text-slate-100">{{ $reminder['user']->name }}</p>
+                                    <p class="text-sm text-slate-400">{{ $reminder['user']->phone_number ?: 'Sin celular registrado' }}</p>
+                                    <p class="mt-1 text-xs uppercase tracking-wide text-rose-300">
+                                        Faltan {{ $reminder['missing_matches']->count() }} partido(s) de hoy
+                                    </p>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="button" data-copy-message="{{ $reminder['message'] }}" class="inline-flex items-center justify-center rounded-full border border-slate-600 bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-100 transition hover:border-amber-400/70 hover:text-amber-100">
+                                        Copiar mensaje
+                                    </button>
+                                    @if ($reminder['whatsapp_url'])
+                                        <a href="{{ $reminder['whatsapp_url'] }}" target="_blank" rel="noopener" class="inline-flex items-center justify-center rounded-full bg-emerald-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-emerald-300">
+                                            Enviar por WhatsApp
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="mt-3 rounded-xl border border-slate-800 bg-slate-900/70 p-3 text-sm leading-relaxed text-slate-200">
+                                {{ $reminder['message'] }}
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </x-card>
+
         @if ($selectedMatch)
             <section class="grid gap-4 md:grid-cols-4">
                 <x-card>
@@ -88,4 +136,23 @@
             </x-card>
         @endif
     </div>
+
+    <script>
+        document.querySelectorAll('[data-copy-message]').forEach((button) => {
+            button.addEventListener('click', async () => {
+                const originalText = button.textContent;
+
+                try {
+                    await navigator.clipboard.writeText(button.dataset.copyMessage);
+                    button.textContent = 'Mensaje copiado';
+                } catch (error) {
+                    button.textContent = 'No se pudo copiar';
+                }
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 1800);
+            });
+        });
+    </script>
 @endsection

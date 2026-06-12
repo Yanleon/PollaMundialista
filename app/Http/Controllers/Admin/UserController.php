@@ -35,10 +35,70 @@ class UserController extends Controller
 
     public function predictionReport(Request $request): View
     {
+        $today = now()->startOfDay();
+        $tomorrow = now()->copy()->addDay()->startOfDay();
+
         $matches = MatchGame::query()
             ->with(['homeTeam', 'awayTeam'])
             ->orderBy('match_date')
             ->get();
+
+        $todayMatches = MatchGame::query()
+            ->with(['homeTeam', 'awayTeam'])
+            ->openForPrediction()
+            ->where('match_date', '>=', $today)
+            ->where('match_date', '<', $tomorrow)
+            ->orderBy('match_date')
+            ->get();
+
+        $todayMatchIds = $todayMatches->pluck('id');
+        $whatsappReminders = collect();
+
+        if ($todayMatches->isNotEmpty()) {
+            $whatsappReminders = User::query()
+                ->where('role', 'participant')
+                ->where('status', 'active')
+                ->with(['predictions' => fn ($query) => $query->whereIn('match_game_id', $todayMatchIds)])
+                ->orderBy('name')
+                ->get()
+                ->map(function (User $user) use ($todayMatches): array {
+                    $predictedMatchIds = $user->predictions->pluck('match_game_id');
+                    $missingMatches = $todayMatches
+                        ->reject(fn (MatchGame $matchGame) => $predictedMatchIds->contains($matchGame->id))
+                        ->values();
+
+                    $matchList = $missingMatches
+                        ->map(fn (MatchGame $matchGame) => sprintf(
+                            '%s vs %s (%s)',
+                            $matchGame->homeTeam?->name ?? 'Equipo pendiente',
+                            $matchGame->awayTeam?->name ?? 'Equipo pendiente',
+                            $matchGame->match_date?->format('H:i') ?? 'hora pendiente'
+                        ))
+                        ->implode(', ');
+
+                    $message = "Hola {$user->name}, no has pronosticado todos los partidos de hoy. No se te olvide que tienes hasta 15 minutos antes de cada partido para hacer tu pronostico y seguir acumulando puntos.";
+
+                    if ($matchList !== '') {
+                        $message .= " Partidos pendientes: {$matchList}.";
+                    }
+
+                    $phone = preg_replace('/\D+/', '', (string) $user->phone_number);
+
+                    if (strlen($phone) === 10) {
+                        $phone = '57'.$phone;
+                    }
+
+                    return [
+                        'user' => $user,
+                        'missing_matches' => $missingMatches,
+                        'message' => $message,
+                        'whatsapp_phone' => $phone,
+                        'whatsapp_url' => $phone !== '' ? 'https://wa.me/'.$phone.'?text='.rawurlencode($message) : null,
+                    ];
+                })
+                ->filter(fn (array $reminder) => $reminder['missing_matches']->isNotEmpty())
+                ->values();
+        }
 
         $selectedMatch = $request->filled('match_id')
             ? $matches->firstWhere('id', (int) $request->integer('match_id'))
@@ -82,6 +142,8 @@ class UserController extends Controller
             'totalParticipants',
             'withPredictionCount',
             'missingPredictionCount',
+            'todayMatches',
+            'whatsappReminders',
         ));
     }
 
