@@ -142,6 +142,7 @@
                             <a href="{{ route('register') }}" class="rounded-full bg-gradient-to-r from-white via-white to-rose-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.03] hover:shadow-[0_0_24px_rgba(255,31,69,0.45)]">Crear cuenta</a>
                         @endif
                         <a href="{{ route('login') }}" class="rounded-full border border-slate-700 bg-slate-900/75 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:border-rose-500/50 hover:text-rose-200">Ya tengo cuenta</a>
+                        <a href="{{ route('leaderboard.index') }}" class="rounded-full border border-cyan-300/50 bg-cyan-300/10 px-5 py-3 text-sm font-semibold text-cyan-100 transition hover:border-cyan-200 hover:bg-cyan-300/15">Ver ranking</a>
                     </div>
                 </div>
 

@@ -15,6 +15,8 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+
 Route::get('/dashboard', function () {
     $user = auth()->user();
 
@@ -26,8 +28,6 @@ Route::get('/dashboard', function () {
 })->middleware('auth')->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
-
     Route::middleware('role:participant')->prefix('participant')->name('participant.')->group(function () {
         Route::get('/dashboard', [ParticipantDashboardController::class, 'index'])->name('dashboard');
         Route::get('/predictions', [PredictionController::class, 'index'])->name('predictions.index');
