@@ -34,7 +34,7 @@
             <section class="bracket-column bracket-column-{{ $round['key'] }}">
                 <header class="bracket-column-head">
                     <h4 class="text-xs uppercase tracking-[0.14em] text-slate-100">{{ $round['label'] }}</h4>
-                    <p class="text-[11px] text-slate-400">{{ $splitRoundMatches($round, 'left')->count() }} cruces</p>
+                    <p class="text-[11px] text-slate-400">{{ $splitRoundMatches($round, 'left')->count() }} {{ $splitRoundMatches($round, 'left')->count() === 1 ? 'cruce' : 'cruces' }}</p>
                 </header>
 
                 <div class="bracket-column-body">
@@ -126,7 +126,7 @@
             <section class="bracket-column bracket-column-{{ $round['key'] }}">
                 <header class="bracket-column-head">
                     <h4 class="text-xs uppercase tracking-[0.14em] text-slate-100">{{ $round['label'] }}</h4>
-                    <p class="text-[11px] text-slate-400">{{ $splitRoundMatches($round, 'right')->count() }} cruces</p>
+                    <p class="text-[11px] text-slate-400">{{ $splitRoundMatches($round, 'right')->count() }} {{ $splitRoundMatches($round, 'right')->count() === 1 ? 'cruce' : 'cruces' }}</p>
                 </header>
 
                 <div class="bracket-column-body">
