@@ -597,11 +597,10 @@
     }
 
     .finals-bracket .bracket-column-body {
-        display: flex;
-        min-height: 0;
-        flex-direction: column;
-        justify-content: center;
-        gap: 0.45rem;
+        display: grid;
+        grid-template-rows: repeat(16, minmax(2.05rem, 1fr));
+        gap: 0.34rem;
+        min-height: 33rem;
     }
 
     .finals-bracket .bracket-column-round_of_32 .bracket-column-body {
@@ -637,8 +636,16 @@
     .finals-round-left:not(.finals-round-semifinals) .connector-slot::before {
         right: -0.72rem;
         width: 0.72rem;
-        height: calc(50% + 0.24rem);
+        height: calc(100% + 0.34rem);
         border-right: 2px solid rgba(103, 232, 249, 0.68);
+    }
+
+    .finals-round-left.finals-round-round_of_16 .connector-slot::before {
+        height: calc(220% + 0.7rem);
+    }
+
+    .finals-round-left.finals-round-quarterfinals .connector-slot::before {
+        height: calc(520% + 1rem);
     }
 
     .finals-round-left:not(.finals-round-semifinals) .connector-slot.slot-odd::before {
@@ -665,9 +672,17 @@
     .finals-round-right:not(.finals-round-semifinals) .connector-slot::before {
         left: -0.72rem;
         width: 0.72rem;
-        height: calc(50% + 0.24rem);
+        height: calc(100% + 0.34rem);
         border-left: 2px solid rgba(244, 114, 182, 0.68);
         filter: drop-shadow(0 0 5px rgba(244, 114, 182, 0.25));
+    }
+
+    .finals-round-right.finals-round-round_of_16 .connector-slot::before {
+        height: calc(220% + 0.7rem);
+    }
+
+    .finals-round-right.finals-round-quarterfinals .connector-slot::before {
+        height: calc(520% + 1rem);
     }
 
     .finals-round-right:not(.finals-round-semifinals) .connector-slot.slot-odd::before {
@@ -701,6 +716,25 @@
     .finals-bracket .bracket-column-round_of_32 .bracket-slot {
         min-height: 3.7rem;
     }
+
+    .finals-bracket .bracket-column-round_of_32 .bracket-slot:nth-child(1) { grid-row: 1 / span 2; }
+    .finals-bracket .bracket-column-round_of_32 .bracket-slot:nth-child(2) { grid-row: 3 / span 2; }
+    .finals-bracket .bracket-column-round_of_32 .bracket-slot:nth-child(3) { grid-row: 5 / span 2; }
+    .finals-bracket .bracket-column-round_of_32 .bracket-slot:nth-child(4) { grid-row: 7 / span 2; }
+    .finals-bracket .bracket-column-round_of_32 .bracket-slot:nth-child(5) { grid-row: 9 / span 2; }
+    .finals-bracket .bracket-column-round_of_32 .bracket-slot:nth-child(6) { grid-row: 11 / span 2; }
+    .finals-bracket .bracket-column-round_of_32 .bracket-slot:nth-child(7) { grid-row: 13 / span 2; }
+    .finals-bracket .bracket-column-round_of_32 .bracket-slot:nth-child(8) { grid-row: 15 / span 2; }
+
+    .finals-bracket .bracket-column-round_of_16 .bracket-slot:nth-child(1) { grid-row: 2 / span 2; }
+    .finals-bracket .bracket-column-round_of_16 .bracket-slot:nth-child(2) { grid-row: 6 / span 2; }
+    .finals-bracket .bracket-column-round_of_16 .bracket-slot:nth-child(3) { grid-row: 10 / span 2; }
+    .finals-bracket .bracket-column-round_of_16 .bracket-slot:nth-child(4) { grid-row: 14 / span 2; }
+
+    .finals-bracket .bracket-column-quarterfinals .bracket-slot:nth-child(1) { grid-row: 4 / span 2; }
+    .finals-bracket .bracket-column-quarterfinals .bracket-slot:nth-child(2) { grid-row: 12 / span 2; }
+
+    .finals-bracket .bracket-column-semifinals .bracket-slot:nth-child(1) { grid-row: 8 / span 2; }
 
     .finals-bracket .bracket-date {
         margin-bottom: 0.18rem;
