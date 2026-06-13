@@ -30,7 +30,23 @@ class MatchGameController extends Controller
         $matches = MatchGame::query()
             ->with(['homeTeam', 'awayTeam'])
             ->orderBy('match_date')
-            ->paginate(15);
+            ->get();
+
+        $matchDays = $matches
+            ->groupBy(fn (MatchGame $matchGame): string => $matchGame->match_date?->toDateString() ?? 'sin-fecha')
+            ->map(function (Collection $dayMatches, string $dateKey): array {
+                $finishedMatches = $dayMatches->where('status', 'finished')->count();
+
+                return [
+                    'key' => $dateKey,
+                    'anchor' => 'fecha-'.$dateKey,
+                    'date' => $dayMatches->first()?->match_date?->copy()->startOfDay(),
+                    'matches' => $dayMatches->values(),
+                    'finished_matches' => $finishedMatches,
+                    'pending_matches' => $dayMatches->count() - $finishedMatches,
+                ];
+            })
+            ->values();
 
         $todayMatches = MatchGame::query()
             ->with(['homeTeam', 'awayTeam'])
@@ -38,7 +54,7 @@ class MatchGameController extends Controller
             ->orderBy('match_date')
             ->get();
 
-        return view('admin.match-games.index', compact('matches', 'todayMatches'));
+        return view('admin.match-games.index', compact('matches', 'matchDays', 'todayMatches'));
     }
 
     public function bracket(): View
@@ -99,8 +115,11 @@ class MatchGameController extends Controller
         $matchGame->update($request->validated());
         $this->scoringService->recalculateMatchPredictions($matchGame);
 
+        $anchor = $request->input('return_anchor');
+        $fragment = is_string($anchor) && preg_match('/^[A-Za-z0-9_-]+$/', $anchor) ? '#'.$anchor : '';
+
         return redirect()
-            ->route('admin.match-games.index')
+            ->to(route('admin.match-games.index').$fragment)
             ->with('success', 'Resultado cargado y puntos recalculados correctamente.');
     }
 

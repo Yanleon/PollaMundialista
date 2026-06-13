@@ -44,63 +44,120 @@
             @endif
         </x-card>
 
-        <x-table :headers="['Partido', 'Fase', 'Fecha', 'Limite', 'Estado', 'Resultado', 'Acciones']">
-            @forelse ($matches as $matchGame)
-                @php
-                    $badgeVariant = match($matchGame->status) {
-                        'scheduled' => 'info',
-                        'live' => 'warning',
-                        'finished' => 'success',
-                        'cancelled' => 'danger',
-                        default => 'muted',
-                    };
-                @endphp
+        @if ($matchDays->isEmpty())
+            <x-card>
+                <p class="text-center text-sm text-slate-400">No hay partidos registrados.</p>
+            </x-card>
+        @else
+            <div class="sticky top-20 z-20 -mx-4 overflow-x-auto border-y border-slate-800 bg-slate-950/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-2xl sm:border sm:bg-slate-950/80">
+                <div class="flex min-w-max gap-2">
+                    @foreach ($matchDays as $day)
+                        @php
+                            $isToday = $day['date']?->isToday();
+                            $isTomorrow = $day['date']?->isTomorrow();
+                            $label = $day['date'] ? ($isToday ? 'Hoy' : ($isTomorrow ? 'Manana' : $day['date']->locale('es')->isoFormat('dddd, D MMM'))) : 'Sin fecha';
+                            $allFinished = $day['pending_matches'] === 0;
+                        @endphp
+                        <a href="#{{ $day['anchor'] }}" class="group flex min-w-36 flex-col rounded-2xl border px-4 py-3 text-left transition {{ $isToday ? 'border-white bg-white text-slate-950 shadow-[0_0_24px_rgba(255,255,255,0.18)]' : 'border-slate-800 bg-slate-900/85 text-slate-200 hover:border-rose-500/60 hover:bg-slate-900' }}">
+                            <span class="text-sm font-bold capitalize leading-tight">{{ $label }}</span>
+                            <span class="mt-1 text-xs {{ $isToday ? 'text-slate-600' : 'text-slate-400 group-hover:text-slate-300' }}">{{ $day['matches']->count() }} {{ $day['matches']->count() === 1 ? 'partido' : 'partidos' }}</span>
+                            <span class="mt-2 h-1 rounded-full {{ $allFinished ? 'bg-emerald-400' : 'bg-rose-500/70' }}"></span>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
 
-                <tr class="hover:bg-slate-800/60 transition">
-                    <td class="px-4 py-3 text-sm font-semibold text-slate-100">{{ $matchGame->homeTeam?->name }} vs {{ $matchGame->awayTeam?->name }}</td>
-                    <td class="px-4 py-3 text-sm text-slate-300">{{ $matchGame->phase }}</td>
-                    <td class="px-4 py-3 text-sm text-slate-300">{{ $matchGame->match_date?->format('d/m/Y H:i') }}</td>
-                    <td class="px-4 py-3 text-sm text-slate-300">{{ $matchGame->prediction_deadline?->format('d/m/Y H:i') }}</td>
-                    <td class="px-4 py-3"><x-badge :variant="$badgeVariant">{{ $matchGame->status }}</x-badge></td>
-                    <td class="px-4 py-3 text-sm font-bold text-rose-300">{{ $matchGame->getFinalResult() ?? '-' }}</td>
-                    <td class="px-4 py-3">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <a href="{{ route('admin.match-games.edit', $matchGame) }}" class="rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-100 hover:border-rose-500/60 hover:text-rose-200">Editar</a>
-                            <form method="POST" action="{{ route('admin.match-games.destroy', $matchGame) }}" onsubmit="return confirm('Deseas eliminar este partido?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="rounded-md bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-500">Eliminar</button>
-                            </form>
+            <div class="space-y-8">
+                @foreach ($matchDays as $day)
+                    @php
+                        $heading = $day['date'] ? $day['date']->locale('es')->isoFormat('dddd, D [de] MMMM') : 'Sin fecha';
+                    @endphp
+
+                    <section id="{{ $day['anchor'] }}" class="scroll-mt-40 space-y-4">
+                        <div class="flex flex-col gap-2 border-b border-slate-800 pb-3 sm:flex-row sm:items-end sm:justify-between">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-rose-300">Fecha de juego</p>
+                                <h2 class="mt-1 text-2xl font-black capitalize text-slate-100">{{ $heading }}</h2>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <x-badge variant="info">{{ $day['matches']->count() }} {{ $day['matches']->count() === 1 ? 'partido' : 'partidos' }}</x-badge>
+                                <x-badge variant="success">{{ $day['finished_matches'] }} finalizados</x-badge>
+                                @if ($day['pending_matches'] > 0)
+                                    <x-badge variant="warning">{{ $day['pending_matches'] }} pendientes</x-badge>
+                                @endif
+                            </div>
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="7" class="bg-slate-900/50 px-4 py-3">
-                        <form method="POST" action="{{ route('admin.match-games.update-result', $matchGame) }}" class="grid gap-3 md:grid-cols-[auto_auto_auto_auto] md:items-end">
-                            @csrf
-                            @method('PATCH')
-                            <div>
-                                <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-300">Goles local</label>
-                                <input type="number" name="home_score" min="0" max="30" value="{{ old('home_score', $matchGame->home_score) }}" class="w-full rounded-xl border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100 focus:border-rose-500 focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-300">Goles visitante</label>
-                                <input type="number" name="away_score" min="0" max="30" value="{{ old('away_score', $matchGame->away_score) }}" class="w-full rounded-xl border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100 focus:border-rose-500 focus:outline-none">
-                            </div>
-                            <input type="hidden" name="status" value="finished">
-                            <x-button type="submit" variant="success" class="md:w-auto">Cargar resultado</x-button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="7" class="px-4 py-6 text-center text-sm text-slate-400">No hay partidos registrados.</td>
-                </tr>
-            @endforelse
-        </x-table>
 
-        <div>
-            {{ $matches->links() }}
-        </div>
+                        <div class="grid gap-4 xl:grid-cols-2">
+                            @foreach ($day['matches'] as $matchGame)
+                                @php
+                                    $badgeVariant = match($matchGame->status) {
+                                        'scheduled' => 'info',
+                                        'live' => 'warning',
+                                        'finished' => 'success',
+                                        'cancelled' => 'danger',
+                                        default => 'muted',
+                                    };
+                                @endphp
+
+                                <article class="overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/70 shadow-[0_22px_60px_rgba(2,6,23,0.32)]">
+                                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 bg-slate-900/65 px-4 py-3">
+                                        <div class="text-sm text-slate-300">
+                                            <span class="font-semibold text-slate-100">{{ $matchGame->match_date?->format('H:i') ?? '--:--' }}</span>
+                                            <span class="mx-2 text-slate-600">/</span>
+                                            {{ $matchGame->phase }}
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <x-badge :variant="$badgeVariant">{{ $matchGame->status }}</x-badge>
+                                            @if ($matchGame->getFinalResult())
+                                                <span class="rounded-full bg-rose-500/15 px-3 py-1 text-xs font-bold text-rose-200 ring-1 ring-inset ring-rose-400/30">{{ $matchGame->getFinalResult() }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-4 p-4">
+                                        <form id="result-form-{{ $matchGame->id }}" method="POST" action="{{ route('admin.match-games.update-result', $matchGame) }}" class="grid gap-3">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="finished">
+                                            <input type="hidden" name="return_anchor" value="{{ $day['anchor'] }}">
+
+                                            <label class="grid grid-cols-[1fr_5rem] items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900/55 px-3 py-3">
+                                                <span class="flex min-w-0 items-center gap-3 text-sm font-bold text-slate-100">
+                                                    <x-team-flag :team="$matchGame->homeTeam" />
+                                                    <span class="truncate">{{ $matchGame->homeTeam?->name ?? 'Equipo local' }}</span>
+                                                </span>
+                                                <input type="number" name="home_score" min="0" max="30" value="{{ old('home_score', $matchGame->home_score) }}" aria-label="Goles de {{ $matchGame->homeTeam?->name ?? 'equipo local' }}" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-center text-lg font-black text-slate-100 focus:border-rose-500 focus:outline-none">
+                                            </label>
+
+                                            <label class="grid grid-cols-[1fr_5rem] items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900/55 px-3 py-3">
+                                                <span class="flex min-w-0 items-center gap-3 text-sm font-bold text-slate-100">
+                                                    <x-team-flag :team="$matchGame->awayTeam" />
+                                                    <span class="truncate">{{ $matchGame->awayTeam?->name ?? 'Equipo visitante' }}</span>
+                                                </span>
+                                                <input type="number" name="away_score" min="0" max="30" value="{{ old('away_score', $matchGame->away_score) }}" aria-label="Goles de {{ $matchGame->awayTeam?->name ?? 'equipo visitante' }}" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-center text-lg font-black text-slate-100 focus:border-rose-500 focus:outline-none">
+                                            </label>
+                                        </form>
+
+                                        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 pt-4">
+                                            <p class="text-xs text-slate-400">Limite: {{ $matchGame->prediction_deadline?->format('d/m/Y H:i') ?? 'Sin limite' }}</p>
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <a href="{{ route('admin.match-games.edit', $matchGame) }}" class="rounded-full border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-100 hover:border-rose-500/60 hover:text-rose-200">Editar</a>
+                                                <form method="POST" action="{{ route('admin.match-games.destroy', $matchGame) }}" onsubmit="return confirm('Deseas eliminar este partido?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="rounded-full bg-rose-600 px-3 py-2 text-xs font-semibold text-white hover:bg-rose-500">Eliminar</button>
+                                                </form>
+                                                <x-button type="submit" variant="success" form="result-form-{{ $matchGame->id }}" class="px-4 py-2 text-xs">Guardar resultado</x-button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            @endforeach
+                        </div>
+                    </section>
+                @endforeach
+            </div>
+        @endif
     </div>
 @endsection
