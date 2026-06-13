@@ -189,6 +189,13 @@ class MatchGameController extends Controller
     {
         return [
             [
+                'key' => 'round_of_32',
+                'label' => 'Dieciseisavos',
+                'phase' => 'Dieciseisavos',
+                'slots' => 16,
+                'keywords' => ['dieciseisavos', 'dieciseisavo', 'treintaidosavos', 'ronda de 32', 'round of 32', 'round_of_32', 'r32', '1/16'],
+            ],
+            [
                 'key' => 'round_of_16',
                 'label' => 'Octavos',
                 'phase' => 'Octavos',

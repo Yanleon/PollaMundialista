@@ -5,7 +5,7 @@
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h1 class="section-title">Llaves eliminatorias</h1>
-                <p class="section-subtitle">Crea y asigna equipos para octavos, cuartos, semifinal y final. Estos cruces alimentan automaticamente la pagina principal, dashboards y pronosticos.</p>
+                <p class="section-subtitle">Crea y asigna equipos para dieciseisavos, octavos, cuartos, semifinal y final. Estos cruces alimentan automaticamente la pagina principal, dashboards y pronosticos.</p>
             </div>
             <a href="{{ route('admin.match-games.index') }}" class="inline-flex items-center rounded-full border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-semibold text-slate-100 transition hover:border-rose-500/60 hover:text-rose-200">Volver a partidos</a>
         </div>
@@ -21,10 +21,10 @@
         <x-card>
             <div class="mb-5 rounded-2xl border border-sky-400/30 bg-sky-500/10 p-4 text-sm text-sky-100/80">
                 <p class="font-semibold text-sky-100">Como funciona</p>
-                <p class="mt-1">Cuando se conozcan los clasificados, crea el cruce pendiente o entra a "Asignar equipos". Al guardar el partido con fase Octavos, Cuartos, Semifinal o Final, se actualizan las vistas publicas y de participantes.</p>
+                <p class="mt-1">Cuando se conozcan los clasificados, crea el cruce pendiente o entra a "Asignar equipos". Al guardar el partido con fase Dieciseisavos, Octavos, Cuartos, Semifinal o Final, se actualizan las vistas publicas y de participantes.</p>
             </div>
 
-            <div class="grid gap-4 lg:grid-cols-4">
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
                 @foreach ($bracketRounds as $round)
                     <div class="rounded-2xl border border-slate-700 bg-slate-900/70 p-4">
                         <div class="mb-3 flex items-center justify-between gap-2">
