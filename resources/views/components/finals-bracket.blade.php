@@ -31,7 +31,7 @@
     <div class="finals-path finals-path-left">
         <p class="finals-path-label">Camino 1</p>
         @foreach ($leftRounds as $round)
-            <section class="bracket-column bracket-column-{{ $round['key'] }}">
+            <section class="bracket-column bracket-column-{{ $round['key'] }} finals-round finals-round-left finals-round-{{ $round['key'] }}">
                 <header class="bracket-column-head">
                     <h4 class="text-xs uppercase tracking-[0.14em] text-slate-100">{{ $round['label'] }}</h4>
                     <p class="text-[11px] text-slate-400">{{ $splitRoundMatches($round, 'left')->count() }} {{ $splitRoundMatches($round, 'left')->count() === 1 ? 'cruce' : 'cruces' }}</p>
@@ -50,7 +50,7 @@
                                 };
                             @endphp
 
-                            <article class="bracket-slot {{ $loop->odd ? 'slot-odd' : 'slot-even' }}">
+                            <article class="bracket-slot {{ $loop->odd ? 'slot-odd' : 'slot-even' }} connector-slot">
                                 <p class="bracket-date">{{ $matchGame->match_date?->format('d M | H:i') }}</p>
                                 <div class="bracket-team-row">
                                     <span class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold"><x-team-flag :team="$matchGame->homeTeam" /> <span class="truncate">{{ $matchGame->homeTeam?->name ?? 'Por definir' }}</span></span>
@@ -67,7 +67,7 @@
                                 <div class="mt-2"><x-badge :variant="$statusVariant" class="text-[10px]">{{ $matchGame->status }}</x-badge></div>
                             </article>
                         @else
-                            <article class="bracket-slot bracket-slot-empty {{ $loop->odd ? 'slot-odd' : 'slot-even' }}">
+                            <article class="bracket-slot bracket-slot-empty {{ $loop->odd ? 'slot-odd' : 'slot-even' }} connector-slot">
                                 <p class="text-center text-xs text-slate-400">Cruce pendiente</p>
                             </article>
                         @endif
@@ -123,7 +123,7 @@
     <div class="finals-path finals-path-right">
         <p class="finals-path-label">Camino 2</p>
         @foreach ($rightRounds as $round)
-            <section class="bracket-column bracket-column-{{ $round['key'] }}">
+            <section class="bracket-column bracket-column-{{ $round['key'] }} finals-round finals-round-right finals-round-{{ $round['key'] }}">
                 <header class="bracket-column-head">
                     <h4 class="text-xs uppercase tracking-[0.14em] text-slate-100">{{ $round['label'] }}</h4>
                     <p class="text-[11px] text-slate-400">{{ $splitRoundMatches($round, 'right')->count() }} {{ $splitRoundMatches($round, 'right')->count() === 1 ? 'cruce' : 'cruces' }}</p>
@@ -142,7 +142,7 @@
                                 };
                             @endphp
 
-                            <article class="bracket-slot {{ $loop->odd ? 'slot-odd' : 'slot-even' }}">
+                            <article class="bracket-slot {{ $loop->odd ? 'slot-odd' : 'slot-even' }} connector-slot">
                                 <p class="bracket-date">{{ $matchGame->match_date?->format('d M | H:i') }}</p>
                                 <div class="bracket-team-row">
                                     <span class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold"><x-team-flag :team="$matchGame->homeTeam" /> <span class="truncate">{{ $matchGame->homeTeam?->name ?? 'Por definir' }}</span></span>
@@ -159,7 +159,7 @@
                                 <div class="mt-2"><x-badge :variant="$statusVariant" class="text-[10px]">{{ $matchGame->status }}</x-badge></div>
                             </article>
                         @else
-                            <article class="bracket-slot bracket-slot-empty {{ $loop->odd ? 'slot-odd' : 'slot-even' }}">
+                            <article class="bracket-slot bracket-slot-empty {{ $loop->odd ? 'slot-odd' : 'slot-even' }} connector-slot">
                                 <p class="text-center text-xs text-slate-400">Cruce pendiente</p>
                             </article>
                         @endif
