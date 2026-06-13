@@ -13,7 +13,11 @@ class TeamController extends Controller
 {
     public function index(): View
     {
-        $teams = Team::query()->latest()->paginate(15);
+        $teams = Team::query()
+            ->orderByRaw('CASE WHEN group_name IS NULL OR group_name = "" THEN 1 ELSE 0 END')
+            ->orderBy('group_name')
+            ->orderBy('name')
+            ->get();
 
         return view('admin.teams.index', compact('teams'));
     }

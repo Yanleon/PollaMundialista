@@ -122,6 +122,142 @@
         color: var(--brand-strong);
     }
 
+    .team-groups-board {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    }
+
+    .team-group-card {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(96, 165, 250, 0.28);
+        border-radius: 1.35rem;
+        background:
+            radial-gradient(circle at 10% 10%, rgba(34, 211, 238, 0.16), transparent 32%),
+            radial-gradient(circle at 90% 0%, rgba(244, 63, 94, 0.15), transparent 30%),
+            rgba(2, 6, 23, 0.78);
+        padding: 0.9rem;
+        box-shadow: 0 22px 48px rgba(0, 0, 0, 0.28);
+    }
+
+    .team-group-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        background-size: 28px 28px;
+        opacity: 0.45;
+    }
+
+    .team-group-head {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.85rem;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.28);
+        padding-bottom: 0.65rem;
+    }
+
+    .team-group-kicker {
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #67e8f9;
+    }
+
+    .team-group-head h2 {
+        margin-top: 0.1rem;
+        font-family: 'Oxanium', sans-serif;
+        font-size: 1.65rem;
+        font-weight: 800;
+        color: #f8fafc;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+
+    .team-group-list {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        gap: 0.55rem;
+    }
+
+    .team-strip {
+        display: grid;
+        gap: 0.55rem;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 1rem 1.4rem 1.4rem 1rem;
+        background: linear-gradient(90deg, #f8fafc, #e5e7eb);
+        padding: 0.45rem;
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+    }
+
+    .team-strip-main {
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        gap: 0.65rem;
+    }
+
+    .team-strip-flag {
+        border-color: rgba(15, 23, 42, 0.28);
+        background: #f8fafc;
+    }
+
+    .team-strip-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .team-action-edit,
+    .team-action-delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 0.38rem 0.65rem;
+        font-size: 0.68rem;
+        font-weight: 800;
+        line-height: 1;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .team-action-edit:hover,
+    .team-action-delete:hover {
+        transform: translateY(-1px);
+    }
+
+    .team-action-edit {
+        border: 1px solid rgba(15, 23, 42, 0.18);
+        background: #0f172a;
+        color: #f8fafc;
+    }
+
+    .team-action-delete {
+        border: 0;
+        background: #e11d48;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    @media (min-width: 640px) {
+        .team-strip {
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+        }
+
+        .team-strip-actions {
+            justify-content: end;
+        }
+    }
+
     .leaderboard-hero {
         position: relative;
         overflow: hidden;

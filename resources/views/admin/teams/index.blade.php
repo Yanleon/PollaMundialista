@@ -14,37 +14,54 @@
             <div class="rounded-xl border border-green-500/40 bg-green-600/10 px-4 py-3 text-sm text-green-200">{{ session('success') }}</div>
         @endif
 
-        <x-table :headers="['Equipo', 'Codigo', 'Grupo', 'Estado', 'Acciones']">
-            @forelse ($teams as $team)
-                <tr class="hover:bg-slate-800/60 transition">
-                    <td class="px-4 py-3 text-sm font-semibold text-slate-100">
-                        <span class="flex items-center gap-2"><x-team-flag :team="$team" size="md" /> {{ $team->name }}</span>
-                    </td>
-                    <td class="px-4 py-3 text-sm text-slate-300">{{ $team->code }}</td>
-                    <td class="px-4 py-3 text-sm text-slate-300">{{ $team->group_name ?? '-' }}</td>
-                    <td class="px-4 py-3">
-                        <x-badge :variant="$team->status === 'active' ? 'success' : 'danger'">{{ $team->status }}</x-badge>
-                    </td>
-                    <td class="px-4 py-3">
-                        <div class="flex items-center gap-2">
-                            <a href="{{ route('admin.teams.edit', $team) }}" class="rounded-md border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-100 hover:border-rose-500/60 hover:text-rose-200">Editar</a>
-                            <form method="POST" action="{{ route('admin.teams.destroy', $team) }}" onsubmit="return confirm('Deseas eliminar este equipo?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="rounded-md bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-500">Eliminar</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="5" class="px-4 py-5 text-center text-sm text-slate-400">No hay equipos registrados.</td>
-                </tr>
-            @endforelse
-        </x-table>
+        @php
+            $groupedTeams = $teams->groupBy(fn ($team) => $team->group_name ?: 'Sin grupo');
+        @endphp
 
-        <div>
-            {{ $teams->links() }}
-        </div>
+        @if ($teams->isEmpty())
+            <x-card>
+                <p class="text-center text-sm text-slate-400">No hay equipos registrados.</p>
+            </x-card>
+        @else
+            <div class="team-groups-board">
+                @foreach ($groupedTeams as $groupName => $groupTeams)
+                    <section class="team-group-card">
+                        <header class="team-group-head">
+                            <div>
+                                <p class="team-group-kicker">Grupo</p>
+                                <h2>{{ $groupName }}</h2>
+                            </div>
+                            <x-badge variant="muted">{{ $groupTeams->count() }} equipos</x-badge>
+                        </header>
+
+                        <div class="team-group-list">
+                            @foreach ($groupTeams as $team)
+                                <article class="team-strip">
+                                    <div class="team-strip-main">
+                                        <x-team-flag :team="$team" size="lg" class="team-strip-flag" />
+                                        <div class="min-w-0">
+                                            <p class="truncate text-sm font-black text-slate-950">{{ $team->name }}</p>
+                                            <div class="mt-1 flex flex-wrap items-center gap-2">
+                                                <span class="rounded-full bg-slate-950/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] text-slate-700">{{ $team->code }}</span>
+                                                <span class="rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] {{ $team->status === 'active' ? 'bg-emerald-500/15 text-emerald-800' : 'bg-rose-500/15 text-rose-800' }}">{{ $team->status }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="team-strip-actions">
+                                        <a href="{{ route('admin.teams.edit', $team) }}" class="team-action-edit">Editar</a>
+                                        <form method="POST" action="{{ route('admin.teams.destroy', $team) }}" onsubmit="return confirm('Deseas eliminar este equipo?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="team-action-delete">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </article>
+                            @endforeach
+                        </div>
+                    </section>
+                @endforeach
+            </div>
+        @endif
     </div>
 @endsection
