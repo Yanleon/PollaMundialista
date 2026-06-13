@@ -49,7 +49,12 @@
                 <p class="text-center text-sm text-slate-400">No hay partidos registrados.</p>
             </x-card>
         @else
-            <div class="sticky top-20 z-20 -mx-4 overflow-x-auto border-y border-slate-800 bg-slate-950/95 px-4 py-3 backdrop-blur sm:mx-0 sm:rounded-2xl sm:border sm:bg-slate-950/80">
+            @php
+                $initialDay = $matchDays->firstWhere(fn (array $day): bool => (bool) $day['date']?->isToday()) ?? $matchDays->first();
+            @endphp
+
+            <div x-data="{ selectedDay: '{{ $initialDay['anchor'] }}' }" x-init="if (window.location.hash && window.location.hash.length > 1) selectedDay = window.location.hash.slice(1)">
+            <div class="-mx-4 mb-6 overflow-x-auto border-y border-slate-800 bg-slate-950/95 px-4 py-3 sm:mx-0 sm:rounded-2xl sm:border sm:bg-slate-950/80">
                 <div class="flex min-w-max gap-2">
                     @foreach ($matchDays as $day)
                         @php
@@ -58,11 +63,11 @@
                             $label = $day['date'] ? ($isToday ? 'Hoy' : ($isTomorrow ? 'Manana' : $day['date']->locale('es')->isoFormat('dddd, D MMM'))) : 'Sin fecha';
                             $allFinished = $day['pending_matches'] === 0;
                         @endphp
-                        <a href="#{{ $day['anchor'] }}" class="group flex min-w-36 flex-col rounded-2xl border px-4 py-3 text-left transition {{ $isToday ? 'border-white bg-white text-slate-950 shadow-[0_0_24px_rgba(255,255,255,0.18)]' : 'border-slate-800 bg-slate-900/85 text-slate-200 hover:border-rose-500/60 hover:bg-slate-900' }}">
+                        <button type="button" x-on:click="selectedDay = '{{ $day['anchor'] }}'; history.replaceState(null, '', '#{{ $day['anchor'] }}')" class="group flex min-w-36 flex-col rounded-2xl border px-4 py-3 text-left transition" x-bind:class="selectedDay === '{{ $day['anchor'] }}' ? 'border-white bg-white text-slate-950 shadow-[0_0_24px_rgba(255,255,255,0.18)]' : 'border-slate-800 bg-slate-900/85 text-slate-200 hover:border-rose-500/60 hover:bg-slate-900'">
                             <span class="text-sm font-bold capitalize leading-tight">{{ $label }}</span>
-                            <span class="mt-1 text-xs {{ $isToday ? 'text-slate-600' : 'text-slate-400 group-hover:text-slate-300' }}">{{ $day['matches']->count() }} {{ $day['matches']->count() === 1 ? 'partido' : 'partidos' }}</span>
+                            <span class="mt-1 text-xs" x-bind:class="selectedDay === '{{ $day['anchor'] }}' ? 'text-slate-600' : 'text-slate-400 group-hover:text-slate-300'">{{ $day['matches']->count() }} {{ $day['matches']->count() === 1 ? 'partido' : 'partidos' }}</span>
                             <span class="mt-2 h-1 rounded-full {{ $allFinished ? 'bg-emerald-400' : 'bg-rose-500/70' }}"></span>
-                        </a>
+                        </button>
                     @endforeach
                 </div>
             </div>
@@ -73,7 +78,7 @@
                         $heading = $day['date'] ? $day['date']->locale('es')->isoFormat('dddd, D [de] MMMM') : 'Sin fecha';
                     @endphp
 
-                    <section id="{{ $day['anchor'] }}" class="scroll-mt-40 space-y-4">
+                    <section id="{{ $day['anchor'] }}" x-show="selectedDay === '{{ $day['anchor'] }}'" class="space-y-4">
                         <div class="flex flex-col gap-2 border-b border-slate-800 pb-3 sm:flex-row sm:items-end sm:justify-between">
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-[0.22em] text-rose-300">Fecha de juego</p>
@@ -157,6 +162,7 @@
                         </div>
                     </section>
                 @endforeach
+            </div>
             </div>
         @endif
     </div>
