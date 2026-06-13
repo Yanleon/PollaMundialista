@@ -113,6 +113,7 @@ class DashboardController extends Controller
                 return [
                     'key' => $round['key'],
                     'label' => $round['label'],
+                    'slots' => $round['slots'],
                     'matches' => $filledSlots,
                 ];
             })
