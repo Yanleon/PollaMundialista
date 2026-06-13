@@ -199,77 +199,7 @@
                             <h3 class="text-3xl font-semibold text-white md:text-5xl">Fase Final</h3>
                         </div>
 
-                        <div class="bracket-layout">
-                            @foreach ($bracketRounds as $round)
-                                <section class="bracket-column bracket-column-{{ $round['key'] }}">
-                                    <header class="bracket-column-head">
-                                        <h4 class="text-xs uppercase tracking-[0.14em] text-slate-100">{{ $round['label'] }}</h4>
-                                        <p class="text-[11px] text-slate-400">Ronda de {{ $round['matches']->count() }}</p>
-                                    </header>
-
-                                    <div class="bracket-column-body">
-                                        @foreach ($round['matches'] as $matchGame)
-                                            @if ($matchGame)
-                                                @php
-                                                    $statusVariant = match($matchGame->status) {
-                                                        'finished' => 'success',
-                                                        'live' => 'warning',
-                                                        'scheduled' => 'info',
-                                                        'cancelled' => 'danger',
-                                                        default => 'muted',
-                                                    };
-                                                @endphp
-
-                                                <article class="bracket-slot {{ $loop->odd ? 'slot-odd' : 'slot-even' }}">
-                                                    <p class="bracket-date">{{ $matchGame->match_date?->format('D, d M | H:i') }}</p>
-                                                    <div class="bracket-team-row">
-                                                        <span class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold text-slate-100"><x-team-flag :team="$matchGame->homeTeam" /> <span class="truncate">{{ $matchGame->homeTeam?->name ?? 'Por definir' }}</span></span>
-                                                        @if ($matchGame->status === 'finished' && $matchGame->home_score !== null && $matchGame->away_score !== null)
-                                                            <span class="text-sm font-bold text-rose-300">{{ $matchGame->home_score }}</span>
-                                                        @endif
-                                                    </div>
-                                                    <div class="bracket-team-row">
-                                                        <span class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold text-slate-100"><x-team-flag :team="$matchGame->awayTeam" /> <span class="truncate">{{ $matchGame->awayTeam?->name ?? 'Por definir' }}</span></span>
-                                                        @if ($matchGame->status === 'finished' && $matchGame->home_score !== null && $matchGame->away_score !== null)
-                                                            <span class="text-sm font-bold text-rose-300">{{ $matchGame->away_score }}</span>
-                                                        @endif
-                                                    </div>
-                                                    <div class="mt-2"><x-badge :variant="$statusVariant" class="text-[10px]">{{ $matchGame->status }}</x-badge></div>
-                                                </article>
-                                            @else
-                                                <article class="bracket-slot bracket-slot-empty {{ $loop->odd ? 'slot-odd' : 'slot-even' }}">
-                                                    <p class="text-center text-xs text-slate-400">Cruce pendiente</p>
-                                                </article>
-                                            @endif
-                                        @endforeach
-                                    </div>
-                                </section>
-                            @endforeach
-
-                            <aside class="bracket-sidepanel">
-                                <div class="bracket-side-block">
-                                    <p class="text-xs uppercase tracking-[0.14em] text-slate-300">Final</p>
-                                    @if ($finalMatch)
-                                        <div class="mt-2 space-y-1 text-sm font-semibold text-white">
-                                            <p class="flex items-center gap-2"><x-team-flag :team="$finalMatch->homeTeam" /> {{ $finalMatch->homeTeam?->name }}</p>
-                                            <p class="flex items-center gap-2"><x-team-flag :team="$finalMatch->awayTeam" /> {{ $finalMatch->awayTeam?->name }}</p>
-                                        </div>
-                                        @if ($finalMatch->status === 'finished' && $finalMatch->home_score !== null && $finalMatch->away_score !== null)
-                                            <p class="mt-1 text-sm font-bold text-rose-300">{{ $finalMatch->home_score }} - {{ $finalMatch->away_score }}</p>
-                                        @else
-                                            <p class="mt-1 text-xs text-slate-400">Pendiente de jugar</p>
-                                        @endif
-                                    @else
-                                        <p class="mt-2 text-sm text-slate-400">Cruce no definido</p>
-                                    @endif
-                                </div>
-
-                                <div class="bracket-side-block">
-                                    <p class="text-xs uppercase tracking-[0.14em] text-slate-300">Campeon</p>
-                                    <p class="mt-2 text-xl font-black text-amber-300">{{ $championName ?? 'Por definir' }}</p>
-                                </div>
-                            </aside>
-                        </div>
+                        <x-finals-bracket :bracket-rounds="$bracketRounds" :final-match="$finalMatch" :champion-name="$championName" />
                     </div>
                 @endif
 
