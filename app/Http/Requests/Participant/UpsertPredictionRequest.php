@@ -17,6 +17,7 @@ class UpsertPredictionRequest extends FormRequest
         return [
             'predicted_home_score' => ['required', 'integer', 'min:0', 'max:30'],
             'predicted_away_score' => ['required', 'integer', 'min:0', 'max:30'],
+            'return_anchor' => ['nullable', 'string', 'regex:/^[A-Za-z0-9_-]+$/'],
         ];
     }
 

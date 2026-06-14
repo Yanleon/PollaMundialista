@@ -47,6 +47,24 @@ class PredictionController extends Controller
 
         $openMatchesCount = $candidateMatches->filter(fn (MatchGame $matchGame) => $matchGame->isPredictionOpen())->count();
 
+        $matchDays = $candidateMatches
+            ->groupBy(fn (MatchGame $matchGame): string => $matchGame->match_date?->toDateString() ?? 'sin-fecha')
+            ->map(function (Collection $dayMatches, string $dateKey) use ($openPredictions): array {
+                $predictedMatches = $dayMatches
+                    ->filter(fn (MatchGame $matchGame): bool => $openPredictions->has($matchGame->id))
+                    ->count();
+
+                return [
+                    'key' => $dateKey,
+                    'anchor' => 'fecha-'.$dateKey,
+                    'date' => $dayMatches->first()?->match_date?->copy()->startOfDay(),
+                    'matches' => $dayMatches->values(),
+                    'predicted_matches' => $predictedMatches,
+                    'pending_matches' => $dayMatches->count() - $predictedMatches,
+                ];
+            })
+            ->values();
+
         $allMatches = MatchGame::query()
             ->with(['homeTeam', 'awayTeam'])
             ->orderBy('match_date')
@@ -63,6 +81,7 @@ class PredictionController extends Controller
 
         return view('participant.predictions.index', [
             'openMatches' => $candidateMatches,
+            'matchDays' => $matchDays,
             'openMatchesCount' => $openMatchesCount,
             'openPredictions' => $openPredictions,
             'bracketRounds' => $bracketRounds,
@@ -205,6 +224,11 @@ class PredictionController extends Controller
             ],
         );
 
-        return back()->with('success', 'Pronostico guardado correctamente.');
+        $anchor = $request->input('return_anchor');
+        $fragment = is_string($anchor) && preg_match('/^[A-Za-z0-9_-]+$/', $anchor) ? '#'.$anchor : '';
+
+        return redirect()
+            ->to(route('participant.predictions.index').$fragment)
+            ->with('success', 'Pronostico guardado correctamente.');
     }
 }

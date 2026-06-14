@@ -3,6 +3,7 @@
     'prediction' => null,
     'editable' => true,
     'action' => null,
+    'returnAnchor' => null,
 ])
 
 @php
@@ -62,6 +63,9 @@
     @if ($editable)
         <form method="POST" action="{{ $actionUrl ?? '#' }}" class="space-y-3">
             @csrf
+            @if ($returnAnchor)
+                <input type="hidden" name="return_anchor" value="{{ $returnAnchor }}">
+            @endif
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-300">Local</label>
