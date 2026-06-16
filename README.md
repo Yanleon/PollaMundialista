@@ -1,4 +1,4 @@
-# Polla Mundialista Empresarial 2026
+# ⚽ Polla Mundialista Empresarial 2026
 
 Aplicacion Laravel para gestionar una polla mundialista interna: participantes, pronosticos, puntajes, ranking, panel administrativo, notificaciones y premios secretos para el top 3.
 
