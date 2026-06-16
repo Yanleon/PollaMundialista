@@ -82,6 +82,10 @@
         </x-card>
 
         @if ($selectedMatch)
+            @php
+                $canShowPredictions = $selectedMatch->match_date?->lte(now()) ?? false;
+            @endphp
+
             <section class="grid gap-4 md:grid-cols-4">
                 <x-card>
                     <p class="text-xs uppercase tracking-wide text-slate-400">Participantes</p>
@@ -121,7 +125,17 @@
                                     <x-badge variant="danger">Falta</x-badge>
                                 @endif
                             </td>
-                            <td class="px-4 py-3 text-sm font-bold text-rose-300">{{ $prediction?->getPredictedResult() ?? '-' }}</td>
+                            <td class="px-4 py-3 text-sm font-bold">
+                                @if (! $prediction)
+                                    <span class="text-slate-500">-</span>
+                                @elseif ($canShowPredictions)
+                                    <span class="text-rose-300">{{ $prediction->getPredictedResult() }}</span>
+                                @else
+                                    <span class="inline-flex items-center rounded-full border border-slate-700 bg-slate-900/80 px-3 py-1 text-xs font-semibold text-slate-300">
+                                        Oculto hasta {{ $selectedMatch->match_date?->format('H:i') }}
+                                    </span>
+                                @endif
+                            </td>
                         </tr>
                     @empty
                         <tr>
