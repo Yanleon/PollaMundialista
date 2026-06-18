@@ -64,6 +64,7 @@
                                 @foreach ($day['matches'] as $matchGame)
                                     @php
                                         $canShowPredictions = $matchGame->match_date?->lte(now()) ?? false;
+                                        $isFinished = $matchGame->status === 'finished' && $matchGame->home_score !== null && $matchGame->away_score !== null;
                                         $predictions = $matchGame->predictions->sortBy(fn ($prediction) => $prediction->user?->name)->values();
                                     @endphp
 
@@ -73,11 +74,16 @@
                                                 <p class="text-sm font-bold text-slate-100">{{ $matchGame->homeTeam?->name ?? 'Equipo local' }} vs {{ $matchGame->awayTeam?->name ?? 'Equipo visitante' }}</p>
                                                 <p class="mt-1 text-xs text-slate-400">{{ $matchGame->phase }} · {{ $matchGame->match_date?->format('d/m/Y H:i') ?? 'Sin fecha' }}</p>
                                             </div>
-                                            @if ($canShowPredictions)
-                                                <x-badge variant="success">Disponible</x-badge>
-                                            @else
-                                                <x-badge variant="warning">Visible {{ $matchGame->match_date?->format('H:i') ?? 'al iniciar' }}</x-badge>
-                                            @endif
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                @if ($isFinished)
+                                                    <span class="rounded-full bg-rose-500/15 px-3 py-1 text-xs font-bold text-rose-200 ring-1 ring-inset ring-rose-400/30">Final: {{ $matchGame->getFinalResult() }}</span>
+                                                @endif
+                                                @if ($canShowPredictions)
+                                                    <x-badge variant="success">Disponible</x-badge>
+                                                @else
+                                                    <x-badge variant="warning">Visible {{ $matchGame->match_date?->format('H:i') ?? 'al iniciar' }}</x-badge>
+                                                @endif
+                                            </div>
                                         </div>
 
                                         @if (! $canShowPredictions)
@@ -94,15 +100,47 @@
                                         @else
                                             <div class="divide-y divide-slate-800">
                                                 @foreach ($predictions as $prediction)
+                                                    @php
+                                                        $predictedHome = (int) $prediction->predicted_home_score;
+                                                        $predictedAway = (int) $prediction->predicted_away_score;
+                                                        $actualHome = $isFinished ? (int) $matchGame->home_score : null;
+                                                        $actualAway = $isFinished ? (int) $matchGame->away_score : null;
+                                                        $homeGoalPoint = $isFinished && ! $prediction->is_exact_score && $predictedHome === $actualHome;
+                                                        $awayGoalPoint = $isFinished && ! $prediction->is_exact_score && $predictedAway === $actualAway;
+                                                        $isCurrentUser = $prediction->user_id === auth()->id();
+                                                    @endphp
+
                                                     <div class="flex items-center justify-between gap-3 px-4 py-3">
                                                         <div class="min-w-0">
-                                                            <p class="truncate text-sm font-semibold text-slate-100">{{ $prediction->user?->name ?? 'Participante' }}</p>
+                                                            <p class="truncate text-sm font-semibold text-slate-100">
+                                                                {{ $prediction->user?->name ?? 'Participante' }}
+                                                                @if ($isCurrentUser)
+                                                                    <span class="ml-2 rounded-full bg-cyan-300/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-cyan-100 ring-1 ring-inset ring-cyan-300/30">Tu</span>
+                                                                @endif
+                                                            </p>
                                                             @if ($prediction->user?->department)
                                                                 <p class="truncate text-xs text-slate-500">{{ $prediction->user->department }}</p>
                                                             @endif
                                                         </div>
-                                                        <span class="shrink-0 rounded-full bg-rose-500/15 px-3 py-1 text-sm font-black text-rose-200 ring-1 ring-inset ring-rose-400/30">{{ $prediction->getPredictedResult() }}</span>
+                                                        <div class="shrink-0 text-right">
+                                                            <span class="inline-flex rounded-full bg-rose-500/15 px-3 py-1 text-sm font-black text-rose-200 ring-1 ring-inset ring-rose-400/30">{{ $prediction->getPredictedResult() }}</span>
+                                                            @if ($isFinished)
+                                                                <p class="mt-1 text-xs font-bold text-emerald-200">{{ $prediction->points }} pts</p>
+                                                            @endif
+                                                        </div>
                                                     </div>
+
+                                                    @if ($isFinished)
+                                                        <div class="flex flex-wrap gap-2 px-4 pb-3">
+                                                            @if ($prediction->is_exact_score)
+                                                                <x-badge variant="success">Marcador exacto: +5</x-badge>
+                                                            @else
+                                                                <x-badge :variant="$prediction->is_correct_result ? 'success' : 'muted'">Resultado: {{ $prediction->is_correct_result ? '+3' : '+0' }}</x-badge>
+                                                                <x-badge :variant="$homeGoalPoint ? 'warning' : 'muted'">Gol local exacto: {{ $homeGoalPoint ? '+1' : '+0' }}</x-badge>
+                                                                <x-badge :variant="$awayGoalPoint ? 'warning' : 'muted'">Gol visitante exacto: {{ $awayGoalPoint ? '+1' : '+0' }}</x-badge>
+                                                            @endif
+                                                        </div>
+                                                    @endif
                                                 @endforeach
                                             </div>
                                         @endif
