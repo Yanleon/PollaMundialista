@@ -128,6 +128,36 @@ class PredictionController extends Controller
         ]);
     }
 
+    public function publicPredictions(): View
+    {
+        $matches = MatchGame::query()
+            ->with(['homeTeam', 'awayTeam', 'predictions.user'])
+            ->orderBy('match_date')
+            ->get();
+
+        $matchDays = $matches
+            ->groupBy(fn (MatchGame $matchGame): string => $matchGame->match_date?->toDateString() ?? 'sin-fecha')
+            ->map(function (Collection $dayMatches, string $dateKey): array {
+                $startedMatches = $dayMatches
+                    ->filter(fn (MatchGame $matchGame): bool => $matchGame->match_date?->lte(now()) ?? false)
+                    ->count();
+
+                return [
+                    'key' => $dateKey,
+                    'anchor' => 'fecha-'.$dateKey,
+                    'date' => $dayMatches->first()?->match_date?->copy()->startOfDay(),
+                    'matches' => $dayMatches->values(),
+                    'started_matches' => $startedMatches,
+                    'locked_matches' => $dayMatches->count() - $startedMatches,
+                ];
+            })
+            ->values();
+
+        return view('participant.predictions.public', [
+            'matchDays' => $matchDays,
+        ]);
+    }
+
     private function buildBracketRounds(Collection $matches): Collection
     {
         return collect($this->bracketRoundConfig())

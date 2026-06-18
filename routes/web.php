@@ -31,6 +31,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('role:participant')->prefix('participant')->name('participant.')->group(function () {
         Route::get('/dashboard', [ParticipantDashboardController::class, 'index'])->name('dashboard');
         Route::get('/predictions', [PredictionController::class, 'index'])->name('predictions.index');
+        Route::get('/predictions/public', [PredictionController::class, 'publicPredictions'])->name('predictions.public');
         Route::get('/predictions/history', [PredictionController::class, 'history'])->name('predictions.history');
         Route::post('/match-games/{matchGame}/prediction', [PredictionController::class, 'upsert'])->name('predictions.upsert');
     });
