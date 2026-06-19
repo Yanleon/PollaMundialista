@@ -43,21 +43,6 @@ class LeaderboardController extends Controller
         $topRanking = (clone $rankingQuery)->limit(3)->get();
         $ranking = $rankingQuery->paginate(25);
 
-        $prizes = [
-            1 => [
-                'name' => AppSetting::getValue('prize_first_place'),
-                'image_path' => AppSetting::getValue('prize_first_place_image_path'),
-            ],
-            2 => [
-                'name' => AppSetting::getValue('prize_second_place'),
-                'image_path' => AppSetting::getValue('prize_second_place_image_path'),
-            ],
-            3 => [
-                'name' => AppSetting::getValue('prize_third_place'),
-                'image_path' => AppSetting::getValue('prize_third_place_image_path'),
-            ],
-        ];
-
         $finalMatch = MatchGame::query()
             ->where('phase', 'like', '%final%')
             ->where('phase', 'not like', '%semi%')
@@ -65,11 +50,29 @@ class LeaderboardController extends Controller
             ->first();
 
         $configuredRevealAt = AppSetting::getValue('prize_reveal_at');
-        $prizesRevealAt = $configuredRevealAt
+        $fallbackRevealAt = $configuredRevealAt
             ? Carbon::parse($configuredRevealAt)->startOfDay()
             : $finalMatch?->match_date?->copy()->startOfDay();
-        $prizesAreRevealed = $prizesRevealAt !== null && now()->startOfDay()->greaterThanOrEqualTo($prizesRevealAt);
-        $canViewSecretPrizes = auth()->user()?->isAdmin() || $prizesAreRevealed;
+
+        $prizes = collect([
+            1 => ['name_key' => 'prize_first_place', 'image_key' => 'prize_first_place_image_path', 'reveal_key' => 'prize_first_place_reveal_at'],
+            2 => ['name_key' => 'prize_second_place', 'image_key' => 'prize_second_place_image_path', 'reveal_key' => 'prize_second_place_reveal_at'],
+            3 => ['name_key' => 'prize_third_place', 'image_key' => 'prize_third_place_image_path', 'reveal_key' => 'prize_third_place_reveal_at'],
+        ])->map(function (array $config) use ($fallbackRevealAt): array {
+            $configuredPrizeRevealAt = AppSetting::getValue($config['reveal_key']);
+            $revealAt = $configuredPrizeRevealAt ? Carbon::parse($configuredPrizeRevealAt)->startOfDay() : $fallbackRevealAt;
+
+            return [
+                'name' => AppSetting::getValue($config['name_key']),
+                'image_path' => AppSetting::getValue($config['image_key']),
+                'reveal_at' => $revealAt,
+                'is_revealed' => $revealAt !== null && now()->startOfDay()->greaterThanOrEqualTo($revealAt),
+            ];
+        })->all();
+
+        $prizesRevealAt = collect($prizes)->pluck('reveal_at')->filter()->min();
+        $prizesAreRevealed = collect($prizes)->every(fn (array $prize): bool => $prize['is_revealed']);
+        $canViewSecretPrizes = auth()->user()?->isAdmin() || collect($prizes)->contains(fn (array $prize): bool => $prize['is_revealed']);
 
         return view('leaderboard.index', compact('ranking', 'topRanking', 'prizes', 'prizesRevealAt', 'prizesAreRevealed', 'canViewSecretPrizes'));
     }

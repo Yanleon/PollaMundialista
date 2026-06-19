@@ -71,31 +71,42 @@
         </section>
 
         <section class="overflow-hidden rounded-[2rem] border border-amber-400/30 bg-gradient-to-br from-slate-950 via-slate-900 to-rose-950/70 p-5 shadow-[0_0_42px_rgba(251,191,36,0.08)]">
+                @php
+                    $revealedPrizeCount = collect($prizes)->filter(fn ($prize) => $prize['is_revealed'] ?? false)->count();
+                @endphp
+
                 <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-[0.22em] text-amber-200">Premios top 3</p>
-                        <h2 class="mt-1 text-2xl font-black text-white">{{ $prizesAreRevealed ? 'Premios destapados' : 'Premios bajo llave' }}</h2>
+                        <h2 class="mt-1 text-2xl font-black text-white">{{ $revealedPrizeCount > 0 ? 'Premios en destape' : 'Premios bajo llave' }}</h2>
                         <p class="mt-1 text-sm text-slate-300">
                             @if ($prizesAreRevealed)
-                                Ya puedes ver los premios oficiales para los tres primeros lugares.
+                                Ya puedes ver todos los premios oficiales.
+                            @elseif ($revealedPrizeCount > 0)
+                                Algunos premios ya estan visibles y otros siguen tapados hasta su fecha.
                             @elseif ($prizesRevealAt)
-                                Se destapan el {{ $prizesRevealAt->format('d/m/Y') }}, dia de la final.
+                                El primer premio se destapa el {{ $prizesRevealAt->format('d/m/Y') }}.
                             @else
-                                El admin los destapara cuando llegue la final.
+                                El admin definira las fechas de destape.
                             @endif
                         </p>
                     </div>
-                    <x-badge variant="warning">{{ $prizesAreRevealed ? 'Revelados' : 'Secretos' }}</x-badge>
+                    <x-badge variant="warning">{{ $revealedPrizeCount }}/3 visibles</x-badge>
                 </div>
 
                 <div class="grid gap-4 md:grid-cols-3">
                     @foreach ([1 => 'Primer lugar', 2 => 'Segundo lugar', 3 => 'Tercer lugar'] as $place => $label)
+                        @php
+                            $prizeVisible = $prizes[$place]['is_revealed'] ?? false;
+                            $prizeRevealAt = $prizes[$place]['reveal_at'] ?? null;
+                        @endphp
+
                         <article class="relative overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-950/70 p-4">
                             <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{{ $label }}</p>
 
-                            @if ($prizesAreRevealed && ($prizes[$place]['image_path'] ?? null))
+                            @if ($prizeVisible && ($prizes[$place]['image_path'] ?? null))
                                 <img src="{{ asset('storage/'.$prizes[$place]['image_path']) }}" alt="Imagen premio {{ strtolower($label) }}" class="mt-3 h-40 w-full rounded-2xl object-cover">
-                            @elseif ($prizesAreRevealed)
+                            @elseif ($prizeVisible)
                                 <div class="mt-3 flex h-40 w-full items-center justify-center rounded-2xl bg-slate-800 text-sm text-slate-400">Sin imagen</div>
                             @else
                                 <div class="mt-3 relative h-40 w-full overflow-hidden rounded-2xl border border-amber-300/30 bg-[radial-gradient(circle_at_50%_35%,rgba(251,191,36,0.28),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.95),rgba(88,28,135,0.5),rgba(15,23,42,0.95))]">
@@ -109,11 +120,11 @@
                             @endif
 
                             <p class="mt-3 text-lg font-black text-slate-100">
-                                {{ $prizesAreRevealed ? (($prizes[$place]['name'] ?? null) ?: 'Sin premio definido') : 'Premio secreto' }}
+                                {{ $prizeVisible ? (($prizes[$place]['name'] ?? null) ?: 'Sin premio definido') : 'Premio secreto' }}
                             </p>
 
-                            @unless ($prizesAreRevealed)
-                                <p class="mt-1 text-xs text-slate-400">Solo se revelara al llegar la final.</p>
+                            @unless ($prizeVisible)
+                                <p class="mt-1 text-xs text-slate-400">{{ $prizeRevealAt ? 'Se destapa el '.$prizeRevealAt->format('d/m/Y') : 'Fecha de destape pendiente.' }}</p>
                             @endunless
                         </article>
                     @endforeach

@@ -112,55 +112,49 @@
                 <div class="rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4">
                     <div class="mb-4">
                         <h2 class="text-lg font-semibold text-amber-100">Premios secretos</h2>
-                        <p class="text-sm text-amber-100/70">Solo el admin ve estos premios antes del dia de la final. Los participantes los veran cuando llegue la fecha de destape.</p>
+                        <p class="text-sm text-amber-100/70">Cada premio puede tener su propia fecha de destape: octavos, cuartos, final o la ronda que definas.</p>
                     </div>
+
+                    @php
+                        $prizeFields = [
+                            'first_place' => ['label' => 'Primer lugar', 'placeholder' => 'Premio para el campeon'],
+                            'second_place' => ['label' => 'Segundo lugar', 'placeholder' => 'Premio para el subcampeon'],
+                            'third_place' => ['label' => 'Tercer lugar', 'placeholder' => 'Premio para el tercer puesto'],
+                        ];
+                    @endphp
 
                     <div class="grid gap-4 md:grid-cols-3">
-                        <div>
-                            <label class="mb-1 block text-sm font-semibold text-slate-200">Primer lugar</label>
-                            <input type="text" name="prize_first_place" value="{{ old('prize_first_place', $settings->get('prize_first_place')) }}" placeholder="Premio para el campeon" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
-                            @error('prize_first_place') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                        @foreach ($prizeFields as $key => $prizeField)
+                            @php
+                                $nameKey = 'prize_'.$key;
+                                $imageInput = $nameKey.'_image';
+                                $imagePathKey = $nameKey.'_image_path';
+                                $revealKey = $nameKey.'_reveal_at';
+                                $deleteKey = 'delete_'.$nameKey;
+                            @endphp
 
-                            <label class="mt-3 mb-1 block text-sm font-semibold text-slate-200">Imagen primer lugar</label>
-                            <input type="file" name="prize_first_place_image" accept="image/*" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
-                            @error('prize_first_place_image') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
-                            @if ($settings->get('prize_first_place_image_path'))
-                                <img src="{{ asset('storage/'.$settings->get('prize_first_place_image_path')) }}" alt="Imagen premio primer lugar" class="mt-3 h-24 w-full rounded-lg object-cover">
-                            @endif
-                        </div>
+                            <div class="rounded-2xl border border-amber-300/20 bg-slate-950/45 p-3">
+                                <label class="mb-1 block text-sm font-semibold text-slate-200">{{ $prizeField['label'] }}</label>
+                                <input type="text" name="{{ $nameKey }}" value="{{ old($nameKey, $settings->get($nameKey)) }}" placeholder="{{ $prizeField['placeholder'] }}" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
+                                @error($nameKey) <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
 
-                        <div>
-                            <label class="mb-1 block text-sm font-semibold text-slate-200">Segundo lugar</label>
-                            <input type="text" name="prize_second_place" value="{{ old('prize_second_place', $settings->get('prize_second_place')) }}" placeholder="Premio para el subcampeon" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
-                            @error('prize_second_place') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                                <label class="mt-3 mb-1 block text-sm font-semibold text-slate-200">Fecha de destape</label>
+                                <input type="date" name="{{ $revealKey }}" value="{{ old($revealKey, $settings->get($revealKey, $settings->get('prize_reveal_at'))) }}" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
+                                @error($revealKey) <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
 
-                            <label class="mt-3 mb-1 block text-sm font-semibold text-slate-200">Imagen segundo lugar</label>
-                            <input type="file" name="prize_second_place_image" accept="image/*" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
-                            @error('prize_second_place_image') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
-                            @if ($settings->get('prize_second_place_image_path'))
-                                <img src="{{ asset('storage/'.$settings->get('prize_second_place_image_path')) }}" alt="Imagen premio segundo lugar" class="mt-3 h-24 w-full rounded-lg object-cover">
-                            @endif
-                        </div>
+                                <label class="mt-3 mb-1 block text-sm font-semibold text-slate-200">Imagen</label>
+                                <input type="file" name="{{ $imageInput }}" accept="image/*" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
+                                @error($imageInput) <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                                @if ($settings->get($imagePathKey))
+                                    <img src="{{ asset('storage/'.$settings->get($imagePathKey)) }}" alt="Imagen premio {{ strtolower($prizeField['label']) }}" class="mt-3 h-24 w-full rounded-lg object-cover">
+                                @endif
 
-                        <div>
-                            <label class="mb-1 block text-sm font-semibold text-slate-200">Tercer lugar</label>
-                            <input type="text" name="prize_third_place" value="{{ old('prize_third_place', $settings->get('prize_third_place')) }}" placeholder="Premio para el tercer puesto" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
-                            @error('prize_third_place') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
-
-                            <label class="mt-3 mb-1 block text-sm font-semibold text-slate-200">Imagen tercer lugar</label>
-                            <input type="file" name="prize_third_place_image" accept="image/*" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
-                            @error('prize_third_place_image') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
-                            @if ($settings->get('prize_third_place_image_path'))
-                                <img src="{{ asset('storage/'.$settings->get('prize_third_place_image_path')) }}" alt="Imagen premio tercer lugar" class="mt-3 h-24 w-full rounded-lg object-cover">
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <label class="mb-1 block text-sm font-semibold text-slate-200">Fecha de destape</label>
-                        <input type="date" name="prize_reveal_at" value="{{ old('prize_reveal_at', $settings->get('prize_reveal_at')) }}" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100 md:w-64">
-                        <p class="mt-1 text-xs text-slate-400">Si la dejas vacia, el sistema usara la fecha del partido marcado como Final.</p>
-                        @error('prize_reveal_at') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                                <label class="mt-3 flex items-center gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm font-semibold text-rose-100">
+                                    <input type="checkbox" name="{{ $deleteKey }}" value="1" class="rounded border-rose-400 bg-slate-900 text-rose-500 focus:ring-rose-500">
+                                    Eliminar este premio
+                                </label>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
 
