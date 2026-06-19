@@ -38,7 +38,9 @@
 
             <div class="relative z-10 mt-8 grid gap-4 lg:grid-cols-3 lg:items-end">
                 @foreach ($podiumOrder as $position)
-                    @php($entry = $topRanking->get($position - 1))
+                    @php
+                        $entry = $topRanking->get($position - 1);
+                    @endphp
 
                     @if ($entry)
                         <article class="podium-card {{ $podiumClass[$position] }} {{ $position === 1 ? 'lg:order-2' : ($position === 2 ? 'lg:order-1' : 'lg:order-3') }}">
