@@ -28,8 +28,8 @@
     $homePrediction = data_get($prediction, 'predicted_home_score');
     $awayPrediction = data_get($prediction, 'predicted_away_score');
 
-    $homeTeamName = data_get($matchGame, 'homeTeam.name') ?? data_get($matchGame, 'home_team_name') ?? 'Equipo local';
-    $awayTeamName = data_get($matchGame, 'awayTeam.name') ?? data_get($matchGame, 'away_team_name') ?? 'Equipo visitante';
+    $homeTeamName = data_get($matchGame, 'home_display_name') ?? data_get($matchGame, 'homeTeam.name') ?? data_get($matchGame, 'home_team_name') ?? 'Equipo local';
+    $awayTeamName = data_get($matchGame, 'away_display_name') ?? data_get($matchGame, 'awayTeam.name') ?? data_get($matchGame, 'away_team_name') ?? 'Equipo visitante';
     $phase = data_get($matchGame, 'phase', 'Partido');
     $groupName = data_get($matchGame, 'group_name');
     $matchDate = data_get($matchGame, 'match_date');

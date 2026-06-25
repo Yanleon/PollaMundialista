@@ -15,8 +15,11 @@ class MatchGame extends Model
     protected $fillable = [
         'phase',
         'group_name',
+        'bracket_position',
         'home_team_id',
+        'home_placeholder',
         'away_team_id',
+        'away_placeholder',
         'match_date',
         'home_score',
         'away_score',
@@ -28,6 +31,7 @@ class MatchGame extends Model
     {
         return [
             'match_date' => 'datetime',
+            'bracket_position' => 'integer',
             'home_score' => 'integer',
             'away_score' => 'integer',
             'prediction_deadline' => 'datetime',
@@ -79,6 +83,16 @@ class MatchGame extends Model
     public function predictions(): HasMany
     {
         return $this->hasMany(Prediction::class);
+    }
+
+    public function getHomeDisplayNameAttribute(): string
+    {
+        return $this->homeTeam?->name ?? $this->home_placeholder ?? 'Por definir';
+    }
+
+    public function getAwayDisplayNameAttribute(): string
+    {
+        return $this->awayTeam?->name ?? $this->away_placeholder ?? 'Por definir';
     }
 
     /**

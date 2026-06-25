@@ -61,6 +61,8 @@ class MatchGameController extends Controller
     {
         $bracketMatches = MatchGame::query()
             ->with(['homeTeam', 'awayTeam'])
+            ->orderByRaw('bracket_position IS NULL')
+            ->orderBy('bracket_position')
             ->orderBy('match_date')
             ->get()
             ->filter(fn (MatchGame $matchGame) => $this->detectBracketRound($matchGame->phase) !== null);
@@ -179,10 +181,36 @@ class MatchGameController extends Controller
                     'label' => $round['label'],
                     'phase' => $round['phase'],
                     'slots' => $round['slots'],
-                    'matches' => $roundMatches,
+                    'matches' => $this->placeBracketMatches($roundMatches, $round['slots']),
                 ];
             })
             ->values();
+    }
+
+    private function placeBracketMatches(Collection $matches, int $slots): Collection
+    {
+        $filledSlots = collect(range(0, $slots - 1))->map(fn () => null);
+        $fallbackIndex = 0;
+
+        foreach ($matches as $matchGame) {
+            $position = $matchGame->bracket_position;
+
+            if ($position !== null && $position >= 1 && $position <= $slots && $filledSlots->get($position - 1) === null) {
+                $filledSlots[$position - 1] = $matchGame;
+                continue;
+            }
+
+            while ($fallbackIndex < $slots && $filledSlots->get($fallbackIndex) !== null) {
+                $fallbackIndex++;
+            }
+
+            if ($fallbackIndex < $slots) {
+                $filledSlots[$fallbackIndex] = $matchGame;
+                $fallbackIndex++;
+            }
+        }
+
+        return $filledSlots;
     }
 
     private function detectBracketRound(?string $phase): ?string

@@ -53,13 +53,13 @@
                             <article class="bracket-slot {{ $loop->odd ? 'slot-odd' : 'slot-even' }} connector-slot">
                                 <p class="bracket-date">{{ $matchGame->match_date?->format('d M | H:i') }}</p>
                                 <div class="bracket-team-row">
-                                    <span class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold"><x-team-flag :team="$matchGame->homeTeam" /> <span class="truncate">{{ $matchGame->homeTeam?->name ?? 'Por definir' }}</span></span>
+                                    <span class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold"><x-team-flag :team="$matchGame->homeTeam" /> <span class="truncate">{{ $matchGame->home_display_name }}</span></span>
                                     @if ($matchGame->status === 'finished' && $matchGame->home_score !== null && $matchGame->away_score !== null)
                                         <span class="text-sm font-bold text-rose-700">{{ $matchGame->home_score }}</span>
                                     @endif
                                 </div>
                                 <div class="bracket-team-row">
-                                    <span class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold"><x-team-flag :team="$matchGame->awayTeam" /> <span class="truncate">{{ $matchGame->awayTeam?->name ?? 'Por definir' }}</span></span>
+                                    <span class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold"><x-team-flag :team="$matchGame->awayTeam" /> <span class="truncate">{{ $matchGame->away_display_name }}</span></span>
                                     @if ($matchGame->status === 'finished' && $matchGame->home_score !== null && $matchGame->away_score !== null)
                                         <span class="text-sm font-bold text-rose-700">{{ $matchGame->away_score }}</span>
                                     @endif
@@ -89,8 +89,8 @@
             <p class="text-xs uppercase tracking-[0.16em] text-amber-900/80">Final</p>
             @if ($finalMatch)
                 <div class="mt-2 space-y-1 text-sm font-black text-slate-950">
-                    <p class="flex items-center justify-center gap-2"><x-team-flag :team="$finalMatch->homeTeam" /> {{ $finalMatch->homeTeam?->name ?? 'Por definir' }}</p>
-                    <p class="flex items-center justify-center gap-2"><x-team-flag :team="$finalMatch->awayTeam" /> {{ $finalMatch->awayTeam?->name ?? 'Por definir' }}</p>
+                    <p class="flex items-center justify-center gap-2"><x-team-flag :team="$finalMatch->homeTeam" /> {{ $finalMatch->home_display_name }}</p>
+                    <p class="flex items-center justify-center gap-2"><x-team-flag :team="$finalMatch->awayTeam" /> {{ $finalMatch->away_display_name }}</p>
                 </div>
                 @if ($finalMatch->status === 'finished' && $finalMatch->home_score !== null && $finalMatch->away_score !== null)
                     <p class="mt-2 text-lg font-black text-rose-700">{{ $finalMatch->home_score }} - {{ $finalMatch->away_score }}</p>
@@ -106,7 +106,7 @@
             <div class="finals-card finals-card-bronze">
                 <p class="text-xs uppercase tracking-[0.16em] text-amber-950/80">Tercer puesto</p>
                 @if ($thirdPlaceMatch)
-                    <p class="mt-2 text-sm font-black text-slate-950">{{ $thirdPlaceMatch->homeTeam?->name }} vs {{ $thirdPlaceMatch->awayTeam?->name }}</p>
+                    <p class="mt-2 text-sm font-black text-slate-950">{{ $thirdPlaceMatch->home_display_name }} vs {{ $thirdPlaceMatch->away_display_name }}</p>
                     <p class="mt-1 text-sm font-black text-rose-700">{{ $thirdPlaceMatch->home_score }} - {{ $thirdPlaceMatch->away_score }}</p>
                 @else
                     <p class="mt-2 text-sm font-semibold text-amber-950/70">Sin resultado registrado</p>
@@ -145,13 +145,13 @@
                             <article class="bracket-slot {{ $loop->odd ? 'slot-odd' : 'slot-even' }} connector-slot">
                                 <p class="bracket-date">{{ $matchGame->match_date?->format('d M | H:i') }}</p>
                                 <div class="bracket-team-row">
-                                    <span class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold"><x-team-flag :team="$matchGame->homeTeam" /> <span class="truncate">{{ $matchGame->homeTeam?->name ?? 'Por definir' }}</span></span>
+                                    <span class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold"><x-team-flag :team="$matchGame->homeTeam" /> <span class="truncate">{{ $matchGame->home_display_name }}</span></span>
                                     @if ($matchGame->status === 'finished' && $matchGame->home_score !== null && $matchGame->away_score !== null)
                                         <span class="text-sm font-bold text-rose-700">{{ $matchGame->home_score }}</span>
                                     @endif
                                 </div>
                                 <div class="bracket-team-row">
-                                    <span class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold"><x-team-flag :team="$matchGame->awayTeam" /> <span class="truncate">{{ $matchGame->awayTeam?->name ?? 'Por definir' }}</span></span>
+                                    <span class="flex min-w-0 items-center gap-2 truncate text-sm font-semibold"><x-team-flag :team="$matchGame->awayTeam" /> <span class="truncate">{{ $matchGame->away_display_name }}</span></span>
                                     @if ($matchGame->status === 'finished' && $matchGame->home_score !== null && $matchGame->away_score !== null)
                                         <span class="text-sm font-bold text-rose-700">{{ $matchGame->away_score }}</span>
                                     @endif

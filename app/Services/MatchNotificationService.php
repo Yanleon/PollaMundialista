@@ -89,8 +89,8 @@ class MatchNotificationService
             $lines[] = sprintf(
                 '- %s | %s vs %s | %s',
                 $match->match_date?->format('d/m H:i') ?? 'Sin hora',
-                $match->homeTeam?->name ?? 'Local',
-                $match->awayTeam?->name ?? 'Visitante',
+                $match->home_display_name,
+                $match->away_display_name,
                 $match->phase
             );
         }

@@ -20,9 +20,9 @@
 
         if ($finalMatch && $finalMatch->status === 'finished' && $finalMatch->home_score !== null && $finalMatch->away_score !== null) {
             if ($finalMatch->home_score > $finalMatch->away_score) {
-                $championName = $finalMatch->homeTeam?->name;
+                $championName = $finalMatch->home_display_name;
             } elseif ($finalMatch->away_score > $finalMatch->home_score) {
-                $championName = $finalMatch->awayTeam?->name;
+                $championName = $finalMatch->away_display_name;
             }
         }
 
@@ -172,7 +172,7 @@
                 <x-table :headers="['Partido', 'Fase', 'Fecha', 'Marcador']">
                     @forelse ($finishedBracketMatches as $finishedMatch)
                         <tr class="transition hover:bg-slate-800/60">
-                            <td class="px-4 py-3 text-sm font-semibold text-slate-100">{{ $finishedMatch->homeTeam?->name }} vs {{ $finishedMatch->awayTeam?->name }}</td>
+                            <td class="px-4 py-3 text-sm font-semibold text-slate-100">{{ $finishedMatch->home_display_name }} vs {{ $finishedMatch->away_display_name }}</td>
                             <td class="px-4 py-3 text-sm text-slate-300">{{ $finishedMatch->phase }}</td>
                             <td class="px-4 py-3 text-sm text-slate-300">{{ $finishedMatch->match_date?->format('d/m/Y H:i') }}</td>
                             <td class="px-4 py-3 text-sm font-bold text-rose-300">{{ $finishedMatch->home_score }} - {{ $finishedMatch->away_score }}</td>
@@ -197,7 +197,7 @@
                     <div class="space-y-3">
                         @foreach ($upcomingMatches->take(6) as $matchGame)
                             <article class="tournament-mini-match">
-                                <p class="truncate text-sm font-semibold text-slate-100">{{ $matchGame->homeTeam?->name }} vs {{ $matchGame->awayTeam?->name }}</p>
+                                <p class="truncate text-sm font-semibold text-slate-100">{{ $matchGame->home_display_name }} vs {{ $matchGame->away_display_name }}</p>
                                 <div class="mt-1 flex items-center justify-between text-xs text-slate-400">
                                     <span>{{ $matchGame->phase }}</span>
                                     <span>{{ $matchGame->match_date?->format('d/m H:i') }}</span>

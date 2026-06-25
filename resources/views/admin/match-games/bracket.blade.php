@@ -64,7 +64,7 @@
                                 <p class="text-sm text-slate-300">{{ $meta['subtitle'] }}</p>
                             </div>
                             <span class="inline-flex w-max items-center rounded-full px-3 py-1 text-xs font-bold ring-1 ring-inset {{ $meta['badge'] }}">
-                                {{ $round['matches']->count() }} de {{ $round['slots'] }} cruces
+                                {{ $round['matches']->filter()->count() }} de {{ $round['slots'] }} cruces
                             </span>
                         </div>
 
@@ -95,8 +95,8 @@
 
                                                 @if ($match)
                                                     <div class="space-y-1 text-sm font-semibold text-slate-100">
-                                                        <p class="flex items-center gap-2 truncate"><x-team-flag :team="$match->homeTeam" /> <span class="truncate">{{ $match->homeTeam?->name }}</span></p>
-                                                        <p class="flex items-center gap-2 truncate"><x-team-flag :team="$match->awayTeam" /> <span class="truncate">{{ $match->awayTeam?->name }}</span></p>
+                                                        <p class="flex items-center gap-2 truncate"><x-team-flag :team="$match->homeTeam" /> <span class="truncate">{{ $match->home_display_name }}</span></p>
+                                                        <p class="flex items-center gap-2 truncate"><x-team-flag :team="$match->awayTeam" /> <span class="truncate">{{ $match->away_display_name }}</span></p>
                                                     </div>
                                                     <p class="mt-1 text-xs text-slate-400">{{ $match->match_date?->format('d/m/Y H:i') }} · {{ $match->status }}</p>
                                                     <div class="mt-3 flex flex-wrap gap-2">
@@ -109,7 +109,7 @@
                                                     </div>
                                                 @else
                                                     <p class="text-sm text-slate-400">Pendiente de crear</p>
-                                                    <a href="{{ route('admin.match-games.create', ['phase' => $round['phase']]) }}" class="mt-3 inline-flex rounded-md bg-rose-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-rose-500">Crear cruce</a>
+                                                    <a href="{{ route('admin.match-games.create', ['phase' => $round['phase'], 'bracket_position' => $slot]) }}" class="mt-3 inline-flex rounded-md bg-rose-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-rose-500">Crear cruce</a>
                                                 @endif
                                             </div>
                                         @endforeach
@@ -127,7 +127,7 @@
                         <div class="mb-3 flex items-center justify-between gap-2">
                             <div>
                                 <h2 class="text-base font-semibold text-slate-100">{{ $round['label'] }}</h2>
-                                <p class="text-xs text-slate-400">{{ $round['matches']->count() }} de {{ $round['slots'] }} cruces</p>
+                                <p class="text-xs text-slate-400">{{ $round['matches']->filter()->count() }} de {{ $round['slots'] }} cruces</p>
                             </div>
                             <x-badge variant="muted">{{ $round['slots'] }}</x-badge>
                         </div>
@@ -141,8 +141,8 @@
                                 @if ($match)
                                     <div class="rounded-xl border border-slate-700 bg-slate-950/70 p-3">
                                         <div class="space-y-1 text-sm font-semibold text-slate-100">
-                                            <p class="flex items-center gap-2 truncate"><x-team-flag :team="$match->homeTeam" /> <span class="truncate">{{ $match->homeTeam?->name }}</span></p>
-                                            <p class="flex items-center gap-2 truncate"><x-team-flag :team="$match->awayTeam" /> <span class="truncate">{{ $match->awayTeam?->name }}</span></p>
+                                            <p class="flex items-center gap-2 truncate"><x-team-flag :team="$match->homeTeam" /> <span class="truncate">{{ $match->home_display_name }}</span></p>
+                                            <p class="flex items-center gap-2 truncate"><x-team-flag :team="$match->awayTeam" /> <span class="truncate">{{ $match->away_display_name }}</span></p>
                                         </div>
                                         <p class="mt-1 text-xs text-slate-400">{{ $match->match_date?->format('d/m/Y H:i') }} · {{ $match->status }}</p>
                                         <div class="mt-2 flex flex-wrap gap-2">
@@ -157,7 +157,7 @@
                                 @else
                                     <div class="rounded-xl border border-dashed border-slate-700 bg-slate-950/40 p-3">
                                         <p class="text-sm text-slate-400">Cruce {{ $slot }} pendiente</p>
-                                        <a href="{{ route('admin.match-games.create', ['phase' => $round['phase']]) }}" class="mt-2 inline-flex rounded-md bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-500">Crear cruce</a>
+                                        <a href="{{ route('admin.match-games.create', ['phase' => $round['phase'], 'bracket_position' => $slot]) }}" class="mt-2 inline-flex rounded-md bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-500">Crear cruce</a>
                                     </div>
                                 @endif
                             @endforeach

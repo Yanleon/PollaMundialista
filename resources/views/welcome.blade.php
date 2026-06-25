@@ -19,6 +19,8 @@
 
         $allMatches = \App\Models\MatchGame::query()
             ->with(['homeTeam', 'awayTeam'])
+            ->orderByRaw('bracket_position IS NULL')
+            ->orderBy('bracket_position')
             ->orderBy('match_date')
             ->get();
 
@@ -73,20 +75,42 @@
             return null;
         };
 
+        $placeBracketMatches = function ($matches, int $slots) {
+            $filledSlots = collect(range(0, $slots - 1))->map(fn () => null);
+            $fallbackIndex = 0;
+
+            foreach ($matches as $match) {
+                $position = $match->bracket_position;
+
+                if ($position !== null && $position >= 1 && $position <= $slots && $filledSlots->get($position - 1) === null) {
+                    $filledSlots[$position - 1] = $match;
+                    continue;
+                }
+
+                while ($fallbackIndex < $slots && $filledSlots->get($fallbackIndex) !== null) {
+                    $fallbackIndex++;
+                }
+
+                if ($fallbackIndex < $slots) {
+                    $filledSlots[$fallbackIndex] = $match;
+                    $fallbackIndex++;
+                }
+            }
+
+            return $filledSlots;
+        };
+
         $bracketRounds = $roundConfig
-            ->map(function (array $round) use ($allMatches, $detectRound): array {
+            ->map(function (array $round) use ($allMatches, $detectRound, $placeBracketMatches): array {
                 $roundMatches = $allMatches
                     ->filter(fn ($match) => $detectRound($match->phase) === $round['key'])
                     ->values();
-
-                $filledSlots = collect(range(0, $round['slots'] - 1))
-                    ->map(fn (int $index) => $roundMatches->get($index));
 
                 return [
                     'key' => $round['key'],
                     'label' => $round['label'],
                     'slots' => $round['slots'],
-                    'matches' => $filledSlots,
+                    'matches' => $placeBracketMatches($roundMatches, $round['slots']),
                 ];
             })
             ->values();
@@ -98,9 +122,9 @@
 
         if ($finalMatch && $finalMatch->status === 'finished' && $finalMatch->home_score !== null && $finalMatch->away_score !== null) {
             if ($finalMatch->home_score > $finalMatch->away_score) {
-                $championName = $finalMatch->homeTeam?->name;
+                $championName = $finalMatch->home_display_name;
             } elseif ($finalMatch->away_score > $finalMatch->home_score) {
-                $championName = $finalMatch->awayTeam?->name;
+                $championName = $finalMatch->away_display_name;
             }
         }
     @endphp

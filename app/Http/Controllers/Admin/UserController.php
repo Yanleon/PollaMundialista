@@ -70,8 +70,8 @@ class UserController extends Controller
                     $matchList = $missingMatches
                         ->map(fn (MatchGame $matchGame) => sprintf(
                             '%s vs %s (%s)',
-                            $matchGame->homeTeam?->name ?? 'Equipo pendiente',
-                            $matchGame->awayTeam?->name ?? 'Equipo pendiente',
+                            $matchGame->home_display_name,
+                            $matchGame->away_display_name,
                             $matchGame->match_date?->format('H:i') ?? 'hora pendiente'
                         ))
                         ->implode(', ');

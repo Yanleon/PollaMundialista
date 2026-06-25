@@ -71,7 +71,7 @@
                                     <article class="overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/70 shadow-[0_22px_60px_rgba(2,6,23,0.32)]">
                                         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 bg-slate-900/65 px-4 py-3">
                                             <div>
-                                                <p class="text-sm font-bold text-slate-100">{{ $matchGame->homeTeam?->name ?? 'Equipo local' }} vs {{ $matchGame->awayTeam?->name ?? 'Equipo visitante' }}</p>
+                                                <p class="text-sm font-bold text-slate-100">{{ $matchGame->home_display_name }} vs {{ $matchGame->away_display_name }}</p>
                                                 <p class="mt-1 text-xs text-slate-400">{{ $matchGame->phase }} · {{ $matchGame->match_date?->format('d/m/Y H:i') ?? 'Sin fecha' }}</p>
                                             </div>
                                             <div class="flex flex-wrap items-center gap-2">

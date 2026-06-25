@@ -23,8 +23,14 @@
                         @error('group_name') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
                     <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-200">Posicion en bracket</label>
+                        <input type="number" min="1" max="16" name="bracket_position" value="{{ old('bracket_position', request('bracket_position')) }}" placeholder="Ej: 3" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
+                        <p class="mt-1 text-xs text-slate-400">Usa el numero del cruce para fijarlo visualmente.</p>
+                        @error('bracket_position') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
                         <label class="mb-1 block text-sm font-semibold text-slate-200">Equipo local</label>
-                        <select name="home_team_id" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100" required>
+                        <select name="home_team_id" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
                             <option value="">Seleccionar</option>
                             @foreach ($teams as $team)
                                 <option value="{{ $team->id }}" @selected(old('home_team_id') == $team->id)>{{ $team->name }}</option>
@@ -33,8 +39,13 @@
                         @error('home_team_id') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
                     <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-200">Placeholder local</label>
+                        <input name="home_placeholder" value="{{ old('home_placeholder') }}" placeholder="Ej: GER, 3ABCDF, W74" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
+                        @error('home_placeholder') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
                         <label class="mb-1 block text-sm font-semibold text-slate-200">Equipo visitante</label>
-                        <select name="away_team_id" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100" required>
+                        <select name="away_team_id" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
                             <option value="">Seleccionar</option>
                             @foreach ($teams as $team)
                                 <option value="{{ $team->id }}" @selected(old('away_team_id') == $team->id)>{{ $team->name }}</option>
@@ -43,13 +54,18 @@
                         @error('away_team_id') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
                     <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-200">Placeholder visitante</label>
+                        <input name="away_placeholder" value="{{ old('away_placeholder') }}" placeholder="Ej: BRA, 2F, W77" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
+                        @error('away_placeholder') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
                         <label class="mb-1 block text-sm font-semibold text-slate-200">Fecha del partido</label>
-                        <input type="datetime-local" name="match_date" value="{{ old('match_date') }}" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100" required>
+                        <input type="datetime-local" name="match_date" value="{{ old('match_date') }}" data-match-date class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100" required>
                         @error('match_date') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
                     <div>
                         <label class="mb-1 block text-sm font-semibold text-slate-200">Fecha limite de prediccion</label>
-                        <input type="datetime-local" name="prediction_deadline" value="{{ old('prediction_deadline') }}" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100" required>
+                        <input type="datetime-local" name="prediction_deadline" value="{{ old('prediction_deadline') }}" data-prediction-deadline class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100" required>
                         @error('prediction_deadline') <p class="mt-1 text-xs text-red-300">{{ $message }}</p> @enderror
                     </div>
                     <div>
@@ -80,4 +96,19 @@
             </form>
         </x-card>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const matchDate = document.querySelector('[data-match-date]');
+            const deadline = document.querySelector('[data-prediction-deadline]');
+
+            matchDate?.addEventListener('change', () => {
+                if (!matchDate.value) return;
+
+                const date = new Date(matchDate.value);
+                date.setMinutes(date.getMinutes() - 15);
+                deadline.value = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            });
+        });
+    </script>
 @endsection

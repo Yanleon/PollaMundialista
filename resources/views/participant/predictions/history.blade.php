@@ -71,11 +71,11 @@
                                 <td class="px-4 py-4 align-top">
                                     <p class="flex min-w-[220px] items-center gap-2 text-sm font-semibold text-slate-100">
                                         <x-team-flag :team="$matchGame?->homeTeam" />
-                                        <span>{{ $matchGame?->homeTeam?->name ?? 'Por definir' }}</span>
+                                        <span>{{ $matchGame?->home_display_name ?? 'Por definir' }}</span>
                                     </p>
                                     <p class="mt-1 flex min-w-[220px] items-center gap-2 text-sm font-semibold text-slate-100">
                                         <x-team-flag :team="$matchGame?->awayTeam" />
-                                        <span>{{ $matchGame?->awayTeam?->name ?? 'Por definir' }}</span>
+                                        <span>{{ $matchGame?->away_display_name ?? 'Por definir' }}</span>
                                     </p>
                                     <p class="mt-2 text-xs text-slate-400">{{ $matchGame?->phase }} · {{ $matchGame?->match_date?->format('d/m/Y H:i') }}</p>
                                 </td>

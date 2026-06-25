@@ -31,7 +31,7 @@
                     @foreach ($todayMatches as $todayMatch)
                         <li class="rounded-lg bg-slate-800/70 px-3 py-2">
                             {{ $todayMatch->match_date?->format('H:i') }} -
-                            {{ $todayMatch->homeTeam?->name }} vs {{ $todayMatch->awayTeam?->name }}
+                            {{ $todayMatch->home_display_name }} vs {{ $todayMatch->away_display_name }}
                             <span class="text-slate-400">({{ $todayMatch->phase }})</span>
                         </li>
                     @endforeach
@@ -130,17 +130,17 @@
                                             <label class="grid grid-cols-[1fr_5rem] items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900/55 px-3 py-3">
                                                 <span class="flex min-w-0 items-center gap-3 text-sm font-bold text-slate-100">
                                                     <x-team-flag :team="$matchGame->homeTeam" />
-                                                    <span class="truncate">{{ $matchGame->homeTeam?->name ?? 'Equipo local' }}</span>
+                                                    <span class="truncate">{{ $matchGame->home_display_name }}</span>
                                                 </span>
-                                                <input type="number" name="home_score" min="0" max="30" value="{{ old('home_score', $matchGame->home_score) }}" aria-label="Goles de {{ $matchGame->homeTeam?->name ?? 'equipo local' }}" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-center text-lg font-black text-slate-100 focus:border-rose-500 focus:outline-none">
+                                                <input type="number" name="home_score" min="0" max="30" value="{{ old('home_score', $matchGame->home_score) }}" aria-label="Goles de {{ $matchGame->home_display_name }}" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-center text-lg font-black text-slate-100 focus:border-rose-500 focus:outline-none">
                                             </label>
 
                                             <label class="grid grid-cols-[1fr_5rem] items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900/55 px-3 py-3">
                                                 <span class="flex min-w-0 items-center gap-3 text-sm font-bold text-slate-100">
                                                     <x-team-flag :team="$matchGame->awayTeam" />
-                                                    <span class="truncate">{{ $matchGame->awayTeam?->name ?? 'Equipo visitante' }}</span>
+                                                    <span class="truncate">{{ $matchGame->away_display_name }}</span>
                                                 </span>
-                                                <input type="number" name="away_score" min="0" max="30" value="{{ old('away_score', $matchGame->away_score) }}" aria-label="Goles de {{ $matchGame->awayTeam?->name ?? 'equipo visitante' }}" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-center text-lg font-black text-slate-100 focus:border-rose-500 focus:outline-none">
+                                                <input type="number" name="away_score" min="0" max="30" value="{{ old('away_score', $matchGame->away_score) }}" aria-label="Goles de {{ $matchGame->away_display_name }}" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-center text-lg font-black text-slate-100 focus:border-rose-500 focus:outline-none">
                                             </label>
                                         </form>
 

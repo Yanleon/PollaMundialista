@@ -14,7 +14,7 @@
                     <select name="match_id" class="w-full rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-slate-100">
                         @foreach ($matches as $matchGame)
                             <option value="{{ $matchGame->id }}" @selected($selectedMatch?->id === $matchGame->id)>
-                                {{ $matchGame->match_date?->format('d/m/Y H:i') }} - {{ $matchGame->homeTeam?->name }} vs {{ $matchGame->awayTeam?->name }}
+                                {{ $matchGame->match_date?->format('d/m/Y H:i') }} - {{ $matchGame->home_display_name }} vs {{ $matchGame->away_display_name }}
                             </option>
                         @endforeach
                     </select>
@@ -107,7 +107,7 @@
 
             <x-card>
                 <div class="mb-4">
-                    <h2 class="text-lg font-semibold text-slate-100">{{ $selectedMatch->homeTeam?->name }} vs {{ $selectedMatch->awayTeam?->name }}</h2>
+                    <h2 class="text-lg font-semibold text-slate-100">{{ $selectedMatch->home_display_name }} vs {{ $selectedMatch->away_display_name }}</h2>
                     <p class="text-sm text-slate-400">{{ $selectedMatch->phase }} · {{ $selectedMatch->match_date?->format('d/m/Y H:i') }}</p>
                 </div>
 
