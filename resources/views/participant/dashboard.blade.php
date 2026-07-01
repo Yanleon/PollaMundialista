@@ -101,15 +101,17 @@
                             $prizeRevealAt = $prizes[$place]['reveal_at'] ?? null;
                         @endphp
 
-                        <article class="relative overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-950/70 p-4">
+                        <article class="relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-700/80 bg-slate-950/70 p-4">
                             <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{{ $label }}</p>
 
                             @if ($prizeVisible && ($prizes[$place]['image_path'] ?? null))
-                                <img src="{{ asset('storage/'.$prizes[$place]['image_path']) }}" alt="Imagen premio {{ strtolower($label) }}" class="mt-3 h-40 w-full rounded-2xl object-cover">
+                                <div class="mt-3 flex h-56 w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80 p-2 md:h-64">
+                                    <img src="{{ asset('storage/'.$prizes[$place]['image_path']) }}" alt="Imagen premio {{ strtolower($label) }}" class="h-full w-full object-contain">
+                                </div>
                             @elseif ($prizeVisible)
-                                <div class="mt-3 flex h-40 w-full items-center justify-center rounded-2xl bg-slate-800 text-sm text-slate-400">Sin imagen</div>
+                                <div class="mt-3 flex h-56 w-full items-center justify-center rounded-2xl bg-slate-800 text-sm text-slate-400 md:h-64">Sin imagen</div>
                             @else
-                                <div class="mt-3 relative h-40 w-full overflow-hidden rounded-2xl border border-amber-300/30 bg-[radial-gradient(circle_at_50%_35%,rgba(251,191,36,0.28),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.95),rgba(88,28,135,0.5),rgba(15,23,42,0.95))]">
+                                <div class="mt-3 relative h-56 w-full overflow-hidden rounded-2xl border border-amber-300/30 bg-[radial-gradient(circle_at_50%_35%,rgba(251,191,36,0.28),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.95),rgba(88,28,135,0.5),rgba(15,23,42,0.95))] md:h-64">
                                     <div class="absolute inset-0 backdrop-blur-sm"></div>
                                     <div class="absolute inset-x-0 top-1/2 h-10 -translate-y-1/2 rotate-[-8deg] bg-amber-300/90 shadow-[0_0_24px_rgba(251,191,36,0.35)]"></div>
                                     <div class="absolute inset-x-0 top-1/2 h-10 -translate-y-1/2 rotate-[8deg] bg-rose-500/85 shadow-[0_0_24px_rgba(244,63,94,0.35)]"></div>
@@ -119,7 +121,7 @@
                                 </div>
                             @endif
 
-                            <p class="mt-3 text-lg font-black text-slate-100">
+                            <p class="mt-3 text-lg font-black leading-tight text-slate-100">
                                 {{ $prizeVisible ? (($prizes[$place]['name'] ?? null) ?: 'Sin premio definido') : 'Premio secreto' }}
                             </p>
 

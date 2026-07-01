@@ -102,23 +102,25 @@
                 <x-badge variant="warning">{{ auth()->user()?->isAdmin() ? 'Admin' : $revealedPrizeCount.'/3 visibles' }}</x-badge>
             </div>
 
-            <div class="mt-5 grid gap-3 md:grid-cols-3">
+            <div class="mt-5 grid gap-4 md:grid-cols-3">
                 @foreach ([1 => 'Primer lugar', 2 => 'Segundo lugar', 3 => 'Tercer lugar'] as $place => $label)
                     @php
                         $prizeVisible = auth()->user()?->isAdmin() || ($prizes[$place]['is_revealed'] ?? false);
                         $prizeRevealAt = $prizes[$place]['reveal_at'] ?? null;
                     @endphp
 
-                    <div class="rounded-2xl border border-slate-700/80 bg-slate-950/60 p-4">
+                    <div class="flex h-full flex-col rounded-2xl border border-slate-700/80 bg-slate-950/60 p-4">
                         <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{{ $label }}</p>
 
                         @if ($prizeVisible && ($prizes[$place]['image_path'] ?? null))
-                            <img src="{{ asset('storage/'.$prizes[$place]['image_path']) }}" alt="Imagen premio {{ strtolower($label) }}" class="mt-3 h-36 w-full rounded-xl object-cover">
+                            <div class="mt-3 flex h-56 w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/80 p-2 md:h-64">
+                                <img src="{{ asset('storage/'.$prizes[$place]['image_path']) }}" alt="Imagen premio {{ strtolower($label) }}" class="h-full w-full object-contain">
+                            </div>
                         @elseif (! $prizeVisible)
-                            <div class="mt-3 flex h-36 w-full items-center justify-center rounded-xl border border-dashed border-amber-300/30 bg-amber-400/10 text-sm font-semibold text-amber-100">Imagen secreta</div>
+                            <div class="mt-3 flex h-56 w-full items-center justify-center rounded-2xl border border-dashed border-amber-300/30 bg-amber-400/10 text-sm font-semibold text-amber-100 md:h-64">Imagen secreta</div>
                         @endif
 
-                        <p class="mt-2 text-lg font-bold text-slate-100">
+                        <p class="mt-3 text-lg font-bold leading-tight text-slate-100">
                             {{ $prizeVisible ? (($prizes[$place]['name'] ?? null) ?: 'Sin premio definido') : 'Premio secreto' }}
                         </p>
                         @unless ($prizeVisible)
